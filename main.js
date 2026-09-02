@@ -7,6 +7,10 @@ let mainWindow;
 const STATE_FILE = () => path.join(app.getPath('userData'), 'state.json');
 const registeredPartitions = new Set();
 
+// Janelas independentes abertas via "Abrir em nova janela" (uma por conta).
+// accountId -> BrowserWindow
+const accountWindows = new Map();
+
 function createWindow() {
   // Em desenvolvimento (npm start), usa build/icon.png se existir — sem quebrar
   // caso o arquivo ainda não tenha sido criado. No build final (.exe/.AppImage/.dmg)
@@ -250,30 +254,116 @@ function handleDownload(event, item, webContents) {
   });
 }
 
-ipcMain.on('register-partition-downloads', (event, partition) => {
-  if (registeredPartitions.has(partition)) return;
+function ensurePartitionDownloads(partition) {
+  if (!partition || registeredPartitions.has(partition)) return;
   registeredPartitions.add(partition);
   session.fromPartition(partition).on('will-download', handleDownload);
+}
+
+ipcMain.on('register-partition-downloads', (event, partition) => {
+  ensurePartitionDownloads(partition);
+});
+
+// ---------------------------------------------------------------------------
+// Abrir conta em uma janela própria (fora do grid) — carrega a MESMA UI do
+// Idle Hub (index.html), só que em "modo standalone": um novo grid com essa
+// única conta pré-carregada. A conta usa a MESMA partition/sessão do painel
+// no grid principal — cookies/login continuam sincronizados, é a mesma conta
+// sendo exibida em duas janelas, não uma cópia. Só uma janela por conta: se
+// já existir, apenas foca em vez de abrir outra.
+// ---------------------------------------------------------------------------
+ipcMain.handle('open-account-window', (event, data) => {
+  const accountId = data && data.accountId;
+  const partition = String((data && data.partition) || '').trim();
+  const url = String((data && data.url) || '').trim();
+  if (!accountId || !partition || !/^https?:\/\//i.test(url)) {
+    return { ok: false, error: 'invalid-args' };
+  }
+
+  const existing = accountWindows.get(accountId);
+  if (existing && !existing.isDestroyed()) {
+    if (existing.isMinimized()) existing.restore();
+    existing.focus();
+    return { ok: true, focused: true };
+  }
+
+  const win = new BrowserWindow({
+    width: 1280,
+    height: 820,
+    minWidth: 640,
+    minHeight: 420,
+    backgroundColor: '#05070b',
+    title: (data && data.title) ? String(data.title) : 'Idle Hub',
+    frame: false, // mesma titlebar custom em HTML do index.html (não a nativa)
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      webviewTag: true,
+      sandbox: false,
+    },
+  });
+
+  ensurePartitionDownloads(partition);
+
+  win.on('closed', () => accountWindows.delete(accountId));
+  accountWindows.set(accountId, win);
+
+  win.loadFile('index.html', {
+    query: {
+      standalone: '1',
+      account: JSON.stringify({
+        id: accountId,
+        name: (data && data.title) ? String(data.title) : 'Conta',
+        url,
+        partition,
+        colorIdx: (data && data.colorIdx) || 0,
+        iconKey: (data && data.iconKey) || 'apps',
+        muted: !!(data && data.muted),
+        zoomFactor: (data && data.zoomFactor) || 1,
+      }),
+    },
+  });
+  return { ok: true, focused: false };
+});
+
+// Fecha a janela própria de uma conta, se existir (usado ao fechar/excluir a
+// conta ou limpar seus dados a partir do painel principal).
+ipcMain.handle('close-account-window', (event, accountId) => {
+  const win = accountWindows.get(accountId);
+  if (win && !win.isDestroyed()) win.close();
+  return true;
 });
 
 // ---------------------------------------------------------------------------
 // Controles de janela custom
 // ---------------------------------------------------------------------------
-ipcMain.on('win-minimize', () => mainWindow && mainWindow.minimize());
-ipcMain.on('win-maximize', () => {
-  if (!mainWindow) return;
-  if (mainWindow.isMaximized()) mainWindow.unmaximize();
-  else mainWindow.maximize();
+ipcMain.on('win-minimize', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win) win.minimize();
 });
-ipcMain.on('win-close', () => mainWindow && mainWindow.close());
+ipcMain.on('win-maximize', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) return;
+  if (win.isMaximized()) win.unmaximize();
+  else win.maximize();
+});
+ipcMain.on('win-close', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win) win.close();
+});
 
-ipcMain.handle('toggle-fullscreen', () => {
-  if (!mainWindow) return false;
-  const next = !mainWindow.isFullScreen();
-  mainWindow.setFullScreen(next);
+ipcMain.handle('toggle-fullscreen', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) return false;
+  const next = !win.isFullScreen();
+  win.setFullScreen(next);
   return next;
 });
-ipcMain.handle('is-fullscreen', () => (mainWindow ? mainWindow.isFullScreen() : false));
+ipcMain.handle('is-fullscreen', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  return win ? win.isFullScreen() : false;
+});
 
 ipcMain.handle('open-external', (event, url) => {
   if (/^https?:\/\//i.test(url)) shell.openExternal(url);

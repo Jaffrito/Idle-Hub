@@ -27,4 +27,7 @@ contextBridge.exposeInMainWorld('nativeAPI', {
   loadCredentials: () => ipcRenderer.invoke('load-credentials'),
   saveCredentials: (data) => ipcRenderer.invoke('save-credentials', data),
   deleteCredentials: (accountId) => ipcRenderer.invoke('delete-credentials', accountId),
+
+  openAccountWindow: (data) => ipcRenderer.invoke('open-account-window', data),
+  closeAccountWindow: (accountId) => ipcRenderer.invoke('close-account-window', accountId),
 });

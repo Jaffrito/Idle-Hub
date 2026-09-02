@@ -37,7 +37,7 @@ const I18N = {
     layoutAuto: 'Grade automática', layoutSingle: 'Painel único', layoutColumns: 'Colunas', layoutRows: 'Linhas', layoutFree: 'Livre (redimensionável)',
     ctxReload: 'Recarregar', ctxDefaultUrl: 'Ir para a URL padrão', ctxMute: 'Silenciar painel', ctxUnmute: 'Reativar som',
     ctxClose: 'Fechar conta', ctxEdit: 'Editar conta', ctxDuplicate: 'Duplicar conta', ctxClearData: 'Limpar dados da sessão', ctxDelete: 'Excluir conta',
-    ctxDevtools: 'Abrir DevTools (F12)',
+    ctxDevtools: 'Abrir DevTools (F12)', ctxOpenWindow: 'Abrir em nova janela',
     wsCtxEdit: 'Editar workspace', wsCtxDuplicate: 'Duplicar workspace', wsCtxDelete: 'Excluir workspace',
     confirmBtn: 'Confirmar', shortcutsTitle: 'Atalhos de teclado', settingsTitleModal: 'Configurações',
     tabGeneral: 'Geral', tabNav: 'Navegação', tabDownloads: 'Downloads', tabUpdates: 'Atualizações', tabAbout: 'Sobre',
@@ -110,7 +110,7 @@ const I18N = {
     layoutAuto: 'Auto grid', layoutSingle: 'Single panel', layoutColumns: 'Columns', layoutRows: 'Rows', layoutFree: 'Free (resizable)',
     ctxReload: 'Reload', ctxDefaultUrl: 'Go to default URL', ctxMute: 'Mute panel', ctxUnmute: 'Unmute',
     ctxClose: 'Close account', ctxEdit: 'Edit account', ctxDuplicate: 'Duplicate account', ctxClearData: 'Clear session data', ctxDelete: 'Delete account',
-    ctxDevtools: 'Open DevTools (F12)',
+    ctxDevtools: 'Open DevTools (F12)', ctxOpenWindow: 'Open in new window',
     wsCtxEdit: 'Edit workspace', wsCtxDuplicate: 'Duplicate workspace', wsCtxDelete: 'Delete workspace',
     confirmBtn: 'Confirm', shortcutsTitle: 'Keyboard shortcuts', settingsTitleModal: 'Settings',
     tabGeneral: 'General', tabNav: 'Browsing', tabDownloads: 'Downloads', tabUpdates: 'Updates', tabAbout: 'About',
@@ -183,7 +183,7 @@ const I18N = {
     layoutAuto: 'Cuadrícula automática', layoutSingle: 'Panel único', layoutColumns: 'Columnas', layoutRows: 'Filas', layoutFree: 'Libre (redimensionable)',
     ctxReload: 'Recargar', ctxDefaultUrl: 'Ir a la URL predeterminada', ctxMute: 'Silenciar panel', ctxUnmute: 'Reactivar sonido',
     ctxClose: 'Cerrar cuenta', ctxEdit: 'Editar cuenta', ctxDuplicate: 'Duplicar cuenta', ctxClearData: 'Borrar datos de la sesión', ctxDelete: 'Eliminar cuenta',
-    ctxDevtools: 'Abrir DevTools (F12)',
+    ctxDevtools: 'Abrir DevTools (F12)', ctxOpenWindow: 'Abrir en nueva ventana',
     wsCtxEdit: 'Editar workspace', wsCtxDuplicate: 'Duplicar workspace', wsCtxDelete: 'Eliminar workspace',
     confirmBtn: 'Confirmar', shortcutsTitle: 'Atajos de teclado', settingsTitleModal: 'Configuración',
     tabGeneral: 'General', tabNav: 'Navegación', tabDownloads: 'Descargas', tabUpdates: 'Actualizaciones', tabAbout: 'Acerca de',
@@ -285,6 +285,7 @@ const ICONS_MINI = {
   reload: '<svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>',
   expand: '<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>',
   close: '<svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+  openWindow: '<svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
   soundOn: '<svg viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>',
   soundOff: '<svg viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>',
 };
@@ -303,6 +304,29 @@ let state = {
 };
 let activeAccountId = null;
 let saveTimer = null;
+
+// ---------------------------------------------------------------------------
+// Modo "janela avulsa" (aberta via "Abrir em nova janela"): o index.html é
+// recarregado numa segunda BrowserWindow com ?standalone=1&account=<json>.
+// Nesse modo a janela vira um novo grid independente, com essa conta já
+// aberta — mas usando a MESMA partition/sessão dela, então login/cookies
+// continuam sincronizados com o painel do grid principal. Esse estado é
+// só em memória: nunca lê nem grava o state.json do app principal, então
+// contas extras adicionadas aqui somem ao fechar a janela.
+// ---------------------------------------------------------------------------
+function parseStandaloneAccountFromQuery() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('standalone') !== '1') return null;
+    const raw = params.get('account');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('Erro ao ler dados da conta desta janela avulsa:', err);
+    return null;
+  }
+}
+const STANDALONE_ACCOUNT = parseStandaloneAccountFromQuery();
 
 const $ = (sel) => document.querySelector(sel);
 const workspaceIconsEl = $('#workspace-icons');
@@ -349,6 +373,7 @@ function getOpenAccountsOfActiveWorkspace() {
 }
 let isDirty = false;
 function schedulePersist() {
+  if (STANDALONE_ACCOUNT) return; // janela avulsa nunca grava no state.json do app principal
   isDirty = true;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistState, 400);
@@ -379,9 +404,32 @@ async function persistState() {
 // ---------------------------------------------------------------------------
 async function init() {
   let loaded = null;
-  try { loaded = await window.nativeAPI.loadState(); } catch (err) { console.error('Erro ao carregar estado salvo', err); }
+  if (!STANDALONE_ACCOUNT) {
+    try { loaded = await window.nativeAPI.loadState(); } catch (err) { console.error('Erro ao carregar estado salvo', err); }
+  }
 
-  if (loaded && loaded.workspaces && loaded.workspaces.length) {
+  if (STANDALONE_ACCOUNT) {
+    // Novo grid independente com só essa conta (mesma partition/sessão dela).
+    state.settings = defaultSettings();
+    const wsId = state.nextWorkspaceId++;
+    const ws = {
+      id: wsId, name: STANDALONE_ACCOUNT.name || 'Idle Hub', color: COLORS[(STANDALONE_ACCOUNT.colorIdx || 0) % COLORS.length],
+      iconKey: STANDALONE_ACCOUNT.iconKey || 'apps', defaultUrl: STANDALONE_ACCOUNT.url || DEFAULT_URL, layout: 'auto', accounts: [],
+    };
+    state.workspaces.push(ws);
+    state.activeWorkspaceId = wsId;
+    // Semente alta pro contador de ids: contas novas criadas só nesta janela
+    // (via "Adicionar conta") não podem colidir com o id/partition da conta
+    // real que abriu a janela nem com nenhuma outra do app principal.
+    state.nextAccountId = Date.now();
+    const accId = STANDALONE_ACCOUNT.id;
+    ws.accounts.push({
+      id: accId, name: STANDALONE_ACCOUNT.name || t('accountWord'), url: STANDALONE_ACCOUNT.url, defaultUrl: STANDALONE_ACCOUNT.url,
+      partition: STANDALONE_ACCOUNT.partition, colorIdx: STANDALONE_ACCOUNT.colorIdx || 0, iconKey: STANDALONE_ACCOUNT.iconKey || 'apps',
+      status: 'open', muted: !!STANDALONE_ACCOUNT.muted, zoomFactor: STANDALONE_ACCOUNT.zoomFactor || 1,
+      createdAt: Date.now(), webContentsId: null, pid: null,
+    });
+  } else if (loaded && loaded.workspaces && loaded.workspaces.length) {
     state = loaded;
     if (!Array.isArray(state.scripts)) state.scripts = [];
     state.settings = { ...defaultSettings(), ...(state.settings || {}) };
@@ -415,6 +463,7 @@ async function init() {
   applyCleanMode();
   applyPresentationMode();
   applyEcoMode();
+  if (STANDALONE_ACCOUNT) hideStandaloneChrome();
   renderWorkspaceRail();
   renderSidebar();
   renderGrid();
@@ -425,8 +474,20 @@ async function init() {
 
   try { state.settings.iniciarComSistema = !!(await window.nativeAPI.getLoginItem()); } catch (err) { /* ignore */ }
 
+  // As credenciais salvas continuam valendo (mesmo id/mesma conta real), mas
+  // não faz sentido checar atualização a cada janela avulsa aberta.
   await loadCredentials();
-  checkForUpdatesOnStartup();
+  if (!STANDALONE_ACCOUNT) checkForUpdatesOnStartup();
+}
+
+// ---------------------------------------------------------------------------
+// Janela avulsa: esconde o que não se aplica a um grid de conta única — a
+// coluna de workspaces (não há múltiplos workspaces aqui) e o botão de doar.
+// ---------------------------------------------------------------------------
+function hideStandaloneChrome() {
+  const rail = $('#workspace-rail'); if (rail) rail.style.display = 'none';
+  const donateBtn = $('#donate-btn'); if (donateBtn) donateBtn.style.display = 'none';
+  const renameWsBtn = $('#rename-workspace-btn'); if (renameWsBtn) renameWsBtn.style.display = 'none';
 }
 
 // ---------------------------------------------------------------------------
@@ -755,6 +816,31 @@ function closeAccount(id) {
   renderSidebar(); renderGrid(); updateStatusBar(); updateNavButtons(); updateZoomLabel(); updateMuteButton();
   schedulePersist();
 }
+
+// ---------------------------------------------------------------------------
+// Abrir conta em uma janela própria (fora do grid). Usa a MESMA partition da
+// conta, então login/cookies continuam sincronizados com o painel do grid —
+// é a mesma sessão sendo exibida em duas janelas, não uma cópia.
+// ---------------------------------------------------------------------------
+async function openAccountInWindow(id) {
+  const acc = getAccountById(id);
+  if (!acc) return;
+  const url = normalizeUrl(acc.url || acc.defaultUrl || DEFAULT_URL);
+  try {
+    await window.nativeAPI.openAccountWindow({
+      accountId: acc.id,
+      url,
+      partition: acc.partition,
+      title: acc.name,
+      zoomFactor: acc.zoomFactor || 1,
+      muted: !!acc.muted,
+      colorIdx: acc.colorIdx || 0,
+      iconKey: acc.iconKey || 'apps',
+    });
+  } catch (err) {
+    console.error('Erro ao abrir conta em nova janela:', err);
+  }
+}
 function closeAllAccountsOfActiveWorkspace() {
   const ws = getActiveWorkspace();
   if (!ws) return;
@@ -777,6 +863,7 @@ function deleteAccount(id) {
     if (activeAccountId === id) activeAccountId = null;
     delete credentials[id];
     window.nativeAPI.deleteCredentials(id);
+    window.nativeAPI.closeAccountWindow(id).catch(() => {});
     renderWorkspaceRail(); renderSidebar(); renderGrid(); updateStatusBar(); schedulePersist();
   });
 }
@@ -824,6 +911,7 @@ function clearAccountData(id) {
   if (!acc) return;
   showConfirm(t('confirmClearDataTitle'), t('confirmClearDataBody', { name: acc.name }), async () => {
     await window.nativeAPI.clearPartition(acc.partition);
+    window.nativeAPI.closeAccountWindow(id).catch(() => {});
     if (acc.status === 'open') {
       const webview = grid.querySelector(`.account-card[data-id="${acc.id}"] webview`);
       if (webview) webview.reload();
@@ -1217,6 +1305,7 @@ function buildCard(acc) {
     <span class="url blur-target">${escapeHtml(acc.url)}</span>
     <button class="mute" title="Mudo">${muteIcon(acc.muted)}</button>
     <button class="reload" title="Recarregar">${ICONS_MINI.reload}</button>
+    <button class="open-window" title="Abrir em nova janela">${ICONS_MINI.openWindow}</button>
     <button class="expand" title="Maximizar/Restaurar">${ICONS_MINI.expand}</button>
     <button class="close" title="Fechar conta">${ICONS_MINI.close}</button>
   `;
@@ -1284,6 +1373,7 @@ function buildCard(acc) {
     schedulePersist();
   });
   header.querySelector('.reload').addEventListener('click', (ev) => { ev.stopPropagation(); webview.reload(); });
+  header.querySelector('.open-window').addEventListener('click', (ev) => { ev.stopPropagation(); openAccountInWindow(acc.id); });
   header.dataset.tooltip = t('dblClickHint');
   header.querySelector('.expand').addEventListener('click', (ev) => { ev.stopPropagation(); card.classList.toggle('maximized'); });
   header.addEventListener('dblclick', (ev) => {
@@ -1332,7 +1422,7 @@ function openContextMenu(x, y, accountId) {
   const closeBtn = ctxMenu.querySelector('[data-action="close"]');
   closeBtn.style.display = acc.status === 'open' ? 'flex' : 'none';
   ctxMenu.classList.remove('hidden');
-  const w = 220, h = 340;
+  const w = 220, h = 376; // +36px pela nova opção "Abrir em nova janela"
   ctxMenu.style.left = `${Math.max(4, Math.min(x, window.innerWidth - w - 8))}px`;
   ctxMenu.style.top = `${Math.max(4, Math.min(y, window.innerHeight - h - 8))}px`;
 }
@@ -1378,6 +1468,7 @@ ctxMenu.addEventListener('click', (e) => {
     case 'close': closeAccount(id); break;
     case 'edit': openAccountModal('edit', id); break;
     case 'duplicate': duplicateAccount(id); break;
+    case 'open-window': openAccountInWindow(id); break;
     case 'clear-data': clearAccountData(id); break;
     case 'delete': deleteAccount(id); break;
   }
