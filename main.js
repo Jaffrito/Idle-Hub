@@ -7,8 +7,9 @@ let mainWindow;
 const STATE_FILE = () => path.join(app.getPath('userData'), 'state.json');
 const registeredPartitions = new Set();
 
-// Janelas independentes abertas via "Abrir em nova janela" (uma por conta).
-// accountId -> BrowserWindow
+// Janelas independentes abertas via "Abrir em nova janela" (uma por conta ou
+// grupo de contas selecionadas juntas).
+// chave: ids das contas ordenados e unidos por vírgula (ex: "3" ou "3,7,9") -> BrowserWindow
 const accountWindows = new Map();
 
 function createWindow() {
@@ -265,27 +266,43 @@ ipcMain.on('register-partition-downloads', (event, partition) => {
 });
 
 // ---------------------------------------------------------------------------
-// Abrir conta em uma janela própria (fora do grid) — carrega a MESMA UI do
-// Idle Hub (index.html), só que em "modo standalone": um novo grid com essa
-// única conta pré-carregada. A conta usa a MESMA partition/sessão do painel
-// no grid principal — cookies/login continuam sincronizados, é a mesma conta
-// sendo exibida em duas janelas, não uma cópia. Só uma janela por conta: se
-// já existir, apenas foca em vez de abrir outra.
+// Abrir uma ou mais contas em uma janela própria (fora do grid) — carrega a
+// MESMA UI do Idle Hub (index.html), só que em "modo standalone": um novo
+// grid com essas contas pré-carregadas. Cada conta usa a MESMA
+// partition/sessão do painel no grid principal — cookies/login continuam
+// sincronizados, é a mesma conta sendo exibida em duas janelas, não uma
+// cópia. A combinação exata de contas só abre uma janela: pedir de novo com
+// o mesmo grupo apenas foca a existente em vez de abrir outra.
 // ---------------------------------------------------------------------------
-ipcMain.handle('open-account-window', (event, data) => {
-  const accountId = data && data.accountId;
-  const partition = String((data && data.partition) || '').trim();
-  const url = String((data && data.url) || '').trim();
-  if (!accountId || !partition || !/^https?:\/\//i.test(url)) {
-    return { ok: false, error: 'invalid-args' };
-  }
+function windowKeyFor(ids) {
+  return ids.map(String).sort().join(',');
+}
 
-  const existing = accountWindows.get(accountId);
+ipcMain.handle('open-account-window', (event, data) => {
+  const list = Array.isArray(data && data.accounts) ? data.accounts : [];
+  const valid = list
+    .filter((a) => a && a.id != null && String(a.partition || '').trim() && /^https?:\/\//i.test(String(a.url || '')))
+    .map((a) => ({
+      id: a.id,
+      name: String(a.name || 'Conta'),
+      url: String(a.url).trim(),
+      partition: String(a.partition).trim(),
+      colorIdx: a.colorIdx || 0,
+      iconKey: a.iconKey || 'apps',
+      muted: !!a.muted,
+      zoomFactor: a.zoomFactor || 1,
+    }));
+  if (!valid.length) return { ok: false, error: 'invalid-args' };
+
+  const key = windowKeyFor(valid.map((a) => a.id));
+  const existing = accountWindows.get(key);
   if (existing && !existing.isDestroyed()) {
     if (existing.isMinimized()) existing.restore();
     existing.focus();
     return { ok: true, focused: true };
   }
+
+  const windowTitle = valid.length > 1 ? `Idle Hub — ${valid.length} contas` : valid[0].name;
 
   const win = new BrowserWindow({
     width: 1280,
@@ -293,7 +310,7 @@ ipcMain.handle('open-account-window', (event, data) => {
     minWidth: 640,
     minHeight: 420,
     backgroundColor: '#05070b',
-    title: (data && data.title) ? String(data.title) : 'Idle Hub',
+    title: windowTitle,
     frame: false, // mesma titlebar custom em HTML do index.html (não a nativa)
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -304,35 +321,29 @@ ipcMain.handle('open-account-window', (event, data) => {
     },
   });
 
-  ensurePartitionDownloads(partition);
+  valid.forEach((a) => ensurePartitionDownloads(a.partition));
 
-  win.on('closed', () => accountWindows.delete(accountId));
-  accountWindows.set(accountId, win);
+  win.on('closed', () => accountWindows.delete(key));
+  accountWindows.set(key, win);
 
   win.loadFile('index.html', {
-    query: {
-      standalone: '1',
-      account: JSON.stringify({
-        id: accountId,
-        name: (data && data.title) ? String(data.title) : 'Conta',
-        url,
-        partition,
-        colorIdx: (data && data.colorIdx) || 0,
-        iconKey: (data && data.iconKey) || 'apps',
-        muted: !!(data && data.muted),
-        zoomFactor: (data && data.zoomFactor) || 1,
-      }),
-    },
+    query: { standalone: '1', accounts: JSON.stringify(valid) },
   });
   return { ok: true, focused: false };
 });
 
-// Fecha a janela própria de uma conta, se existir (usado ao fechar/excluir a
-// conta ou limpar seus dados a partir do painel principal).
+// Fecha a(s) janela(s) própria(s) que contêm essa conta, se existir (usado ao
+// fechar/excluir a conta ou limpar seus dados a partir do painel principal).
+// Também cobre janelas com várias contas agrupadas.
 ipcMain.handle('close-account-window', (event, accountId) => {
-  const win = accountWindows.get(accountId);
-  if (win && !win.isDestroyed()) win.close();
-  return true;
+  let closed = false;
+  for (const [key, win] of accountWindows) {
+    if (key.split(',').includes(String(accountId)) && win && !win.isDestroyed()) {
+      win.close();
+      closed = true;
+    }
+  }
+  return closed;
 });
 
 // ---------------------------------------------------------------------------

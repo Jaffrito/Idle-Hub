@@ -38,6 +38,7 @@ const I18N = {
     ctxReload: 'Recarregar', ctxDefaultUrl: 'Ir para a URL padrão', ctxMute: 'Silenciar painel', ctxUnmute: 'Reativar som',
     ctxClose: 'Fechar conta', ctxEdit: 'Editar conta', ctxDuplicate: 'Duplicar conta', ctxClearData: 'Limpar dados da sessão', ctxDelete: 'Excluir conta',
     ctxDevtools: 'Abrir DevTools (F12)', ctxOpenWindow: 'Abrir em nova janela',
+    openSelectedInWindow: 'Abrir {n} contas selecionadas em nova janela',
     wsCtxEdit: 'Editar workspace', wsCtxDuplicate: 'Duplicar workspace', wsCtxDelete: 'Excluir workspace',
     confirmBtn: 'Confirmar', shortcutsTitle: 'Atalhos de teclado', settingsTitleModal: 'Configurações',
     tabGeneral: 'Geral', tabNav: 'Navegação', tabDownloads: 'Downloads', tabUpdates: 'Atualizações', tabAbout: 'Sobre',
@@ -71,12 +72,12 @@ const I18N = {
     versionLabel: 'Versão', downloadsHead: 'DOWNLOADS', downloadsEmpty: 'Nenhum download nesta sessão',
     back: 'Voltar', forward: 'Avançar', reloadTitle: 'Recarregar (Ctrl+R)', homeTitle: 'Ir para a URL padrão do workspace',
     addressPh: 'Digite uma URL e pressione Enter… (Ctrl+L)', goAllTitle: 'Abrir esta URL em todas as contas abertas (deste workspace)',
-    muteTitle: 'Silenciar conta ativa (Ctrl+M)', zoomTitle: 'Zoom da conta ativa', downloadsTitle: 'Downloads',
+    muteTitle: 'Volume geral (Ctrl+M)', zoomTitle: 'Zoom da conta ativa', downloadsTitle: 'Downloads',
     cleanModeTitle: 'Modo tela limpa (Ctrl+Shift+Z)', fullscreenTitle: 'Tela cheia (F11)', settingsTitle: 'Configurações (Ctrl+,)', helpTitle: 'Ajuda / Atalhos (F1)',
     statusOnline: 'Online', statusClosed: 'Fechada', accountWord: 'Conta', copySuffix: '(cópia)',
     shcPanel19: 'Selecionar painel 1–9', shcNextPanel: 'Próximo painel', shcNewWorkspace: 'Novo workspace', shcNewAccount: 'Nova conta',
     shcReloadActive: 'Recarregar painel ativo', shcReloadNoCache: 'Recarregar ignorando cache', shcReloadAll: 'Recarregar todas',
-    shcMuteActive: 'Silenciar painel ativo', shcMuteAll: 'Silenciar todas', shcFocusAddress: 'Focar barra de endereço',
+    shcMuteActive: 'Volume geral (mutar/desmutar)', shcMuteAll: 'Silenciar todas', shcFocusAddress: 'Focar barra de endereço',
     shcZoomIn: 'Aumentar zoom', shcZoomOut: 'Diminuir zoom', shcZoomReset: 'Restaurar zoom (100%)',
     shcCleanMode: 'Modo tela limpa', shcFullscreen: 'Tela cheia', shcSettings: 'Configurações', shcHelp: 'Ajuda',
     shcDeleteAccount: 'Excluir conta ativa', shcDevtools: 'Abrir DevTools da conta ativa',
@@ -111,6 +112,7 @@ const I18N = {
     ctxReload: 'Reload', ctxDefaultUrl: 'Go to default URL', ctxMute: 'Mute panel', ctxUnmute: 'Unmute',
     ctxClose: 'Close account', ctxEdit: 'Edit account', ctxDuplicate: 'Duplicate account', ctxClearData: 'Clear session data', ctxDelete: 'Delete account',
     ctxDevtools: 'Open DevTools (F12)', ctxOpenWindow: 'Open in new window',
+    openSelectedInWindow: 'Open {n} selected accounts in new window',
     wsCtxEdit: 'Edit workspace', wsCtxDuplicate: 'Duplicate workspace', wsCtxDelete: 'Delete workspace',
     confirmBtn: 'Confirm', shortcutsTitle: 'Keyboard shortcuts', settingsTitleModal: 'Settings',
     tabGeneral: 'General', tabNav: 'Browsing', tabDownloads: 'Downloads', tabUpdates: 'Updates', tabAbout: 'About',
@@ -144,12 +146,12 @@ const I18N = {
     versionLabel: 'Version', downloadsHead: 'DOWNLOADS', downloadsEmpty: 'No downloads this session',
     back: 'Back', forward: 'Forward', reloadTitle: 'Reload (Ctrl+R)', homeTitle: "Go to the workspace's default URL",
     addressPh: 'Type a URL and press Enter… (Ctrl+L)', goAllTitle: 'Open this URL in all open accounts (this workspace)',
-    muteTitle: 'Mute active account (Ctrl+M)', zoomTitle: 'Zoom of the active account', downloadsTitle: 'Downloads',
+    muteTitle: 'Master volume (Ctrl+M)', zoomTitle: 'Zoom of the active account', downloadsTitle: 'Downloads',
     cleanModeTitle: 'Clean screen mode (Ctrl+Shift+Z)', fullscreenTitle: 'Fullscreen (F11)', settingsTitle: 'Settings (Ctrl+,)', helpTitle: 'Help / Shortcuts (F1)',
     statusOnline: 'Online', statusClosed: 'Closed', accountWord: 'Account', copySuffix: '(copy)',
     shcPanel19: 'Select panel 1–9', shcNextPanel: 'Next panel', shcNewWorkspace: 'New workspace', shcNewAccount: 'New account',
     shcReloadActive: 'Reload active panel', shcReloadNoCache: 'Reload ignoring cache', shcReloadAll: 'Reload all',
-    shcMuteActive: 'Mute active panel', shcMuteAll: 'Mute all', shcFocusAddress: 'Focus address bar',
+    shcMuteActive: 'Master volume (mute/unmute)', shcMuteAll: 'Mute all', shcFocusAddress: 'Focus address bar',
     shcZoomIn: 'Zoom in', shcZoomOut: 'Zoom out', shcZoomReset: 'Reset zoom (100%)',
     shcCleanMode: 'Clean screen mode', shcFullscreen: 'Fullscreen', shcSettings: 'Settings', shcHelp: 'Help',
     shcDeleteAccount: 'Delete active account', shcDevtools: "Open active account's DevTools",
@@ -184,6 +186,7 @@ const I18N = {
     ctxReload: 'Recargar', ctxDefaultUrl: 'Ir a la URL predeterminada', ctxMute: 'Silenciar panel', ctxUnmute: 'Reactivar sonido',
     ctxClose: 'Cerrar cuenta', ctxEdit: 'Editar cuenta', ctxDuplicate: 'Duplicar cuenta', ctxClearData: 'Borrar datos de la sesión', ctxDelete: 'Eliminar cuenta',
     ctxDevtools: 'Abrir DevTools (F12)', ctxOpenWindow: 'Abrir en nueva ventana',
+    openSelectedInWindow: 'Abrir {n} cuentas seleccionadas en nueva ventana',
     wsCtxEdit: 'Editar workspace', wsCtxDuplicate: 'Duplicar workspace', wsCtxDelete: 'Eliminar workspace',
     confirmBtn: 'Confirmar', shortcutsTitle: 'Atajos de teclado', settingsTitleModal: 'Configuración',
     tabGeneral: 'General', tabNav: 'Navegación', tabDownloads: 'Descargas', tabUpdates: 'Actualizaciones', tabAbout: 'Acerca de',
@@ -217,12 +220,12 @@ const I18N = {
     versionLabel: 'Versión', downloadsHead: 'DESCARGAS', downloadsEmpty: 'Ninguna descarga en esta sesión',
     back: 'Atrás', forward: 'Adelante', reloadTitle: 'Recargar (Ctrl+R)', homeTitle: 'Ir a la URL predeterminada del workspace',
     addressPh: 'Escribe una URL y presiona Enter… (Ctrl+L)', goAllTitle: 'Abrir esta URL en todas las cuentas abiertas (este workspace)',
-    muteTitle: 'Silenciar cuenta activa (Ctrl+M)', zoomTitle: 'Zoom de la cuenta activa', downloadsTitle: 'Descargas',
+    muteTitle: 'Volumen general (Ctrl+M)', zoomTitle: 'Zoom de la cuenta activa', downloadsTitle: 'Descargas',
     cleanModeTitle: 'Modo pantalla limpia (Ctrl+Shift+Z)', fullscreenTitle: 'Pantalla completa (F11)', settingsTitle: 'Configuración (Ctrl+,)', helpTitle: 'Ayuda / Atajos (F1)',
     statusOnline: 'Online', statusClosed: 'Cerrada', accountWord: 'Cuenta', copySuffix: '(copia)',
     shcPanel19: 'Seleccionar panel 1–9', shcNextPanel: 'Panel siguiente', shcNewWorkspace: 'Nuevo workspace', shcNewAccount: 'Nueva cuenta',
     shcReloadActive: 'Recargar panel activo', shcReloadNoCache: 'Recargar ignorando caché', shcReloadAll: 'Recargar todas',
-    shcMuteActive: 'Silenciar panel activo', shcMuteAll: 'Silenciar todas', shcFocusAddress: 'Enfocar barra de direcciones',
+    shcMuteActive: 'Volumen general (silenciar/activar)', shcMuteAll: 'Silenciar todas', shcFocusAddress: 'Enfocar barra de direcciones',
     shcZoomIn: 'Acercar zoom', shcZoomOut: 'Alejar zoom', shcZoomReset: 'Restablecer zoom (100%)',
     shcCleanMode: 'Modo pantalla limpia', shcFullscreen: 'Pantalla completa', shcSettings: 'Configuración', shcHelp: 'Ayuda',
     shcDeleteAccount: 'Eliminar cuenta activa', shcDevtools: 'Abrir DevTools de la cuenta activa',
@@ -304,32 +307,58 @@ let state = {
 };
 let activeAccountId = null;
 let saveTimer = null;
+let lastMasterVolume = 100; // pra restaurar ao "desmutar" o volume geral (Ctrl+M)
+
+// Contas marcadas (Ctrl+clique na sidebar) pra abrir juntas numa janela nova
+const selectedAccountIds = new Set();
 
 // ---------------------------------------------------------------------------
-// Modo "janela avulsa" (aberta via "Abrir em nova janela"): o index.html é
-// recarregado numa segunda BrowserWindow com ?standalone=1&account=<json>.
-// Nesse modo a janela vira um novo grid independente, com essa conta já
-// aberta — mas usando a MESMA partition/sessão dela, então login/cookies
-// continuam sincronizados com o painel do grid principal. Esse estado é
-// só em memória: nunca lê nem grava o state.json do app principal, então
-// contas extras adicionadas aqui somem ao fechar a janela.
+// Modo "janela avulsa" (aberta via "Abrir em nova janela" ou "Abrir N contas
+// selecionadas"): o index.html é recarregado numa segunda BrowserWindow com
+// ?standalone=1&accounts=<json array>. Nesse modo a janela vira um novo grid
+// independente, com essas contas já abertas — mas usando a MESMA
+// partition/sessão de cada uma, então login/cookies continuam sincronizados
+// com o painel do grid principal. Esse estado é só em memória: nunca lê nem
+// grava o state.json do app principal, então contas extras adicionadas aqui
+// somem ao fechar a janela.
 // ---------------------------------------------------------------------------
-function parseStandaloneAccountFromQuery() {
+function parseStandaloneAccountsFromQuery() {
   try {
     const params = new URLSearchParams(window.location.search);
     if (params.get('standalone') !== '1') return null;
-    const raw = params.get('account');
+    const raw = params.get('accounts');
     if (!raw) return null;
-    return JSON.parse(raw);
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) && arr.length ? arr : null;
   } catch (err) {
-    console.error('Erro ao ler dados da conta desta janela avulsa:', err);
+    console.error('Erro ao ler dados das contas desta janela avulsa:', err);
     return null;
   }
 }
-const STANDALONE_ACCOUNT = parseStandaloneAccountFromQuery();
+const STANDALONE_ACCOUNTS = parseStandaloneAccountsFromQuery();
 
 const $ = (sel) => document.querySelector(sel);
-const workspaceIconsEl = $('#workspace-icons');
+// Ícones dedicados dos botões de link rápido (mesmo estilo outline dos
+// outros ícones da toolbar — cada um bem diferente pra reconhecer de relance).
+const QUICKLINK_ICONS = {
+  site: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+  ranking: '<svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',
+  discord: '<svg viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>',
+  wiki: '<svg viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>',
+};
+function buildCommunityWorkspace() {
+  const id = state.nextWorkspaceId++;
+  return {
+    id, name: 'Comunidade', color: COLORS[1], iconKey: 'apps',
+    defaultUrl: state.settings.urlInicialPadrao || DEFAULT_URL, layout: 'auto', accounts: [],
+    quickLinks: [
+      { label: 'Site oficial', url: 'https://midgardidle.ro/', icon: 'site' },
+      { label: 'Ranking', url: 'https://midgardidle.ro/rankings', icon: 'ranking' },
+      { label: 'Discord', url: 'https://discord.gg/R7rRrFxBPd', icon: 'discord' },
+      { label: 'Wiki', url: 'https://midgardidlewikifull.vercel.app/', icon: 'wiki' },
+    ],
+  };
+}
 const accountListEl = $('#account-list');
 const grid = $('#grid');
 const addressBar = $('#address-bar');
@@ -341,6 +370,7 @@ function defaultSettings() {
     downloadsPath: null, perguntarOndeSalvar: true, modoTelaLimpa: false, encostarBordas: true,
     modoApresentacao: false,
     modoEco: false,
+    volumeMestre: 100,
   };
 }
 
@@ -373,7 +403,7 @@ function getOpenAccountsOfActiveWorkspace() {
 }
 let isDirty = false;
 function schedulePersist() {
-  if (STANDALONE_ACCOUNT) return; // janela avulsa nunca grava no state.json do app principal
+  if (STANDALONE_ACCOUNTS) return; // janela avulsa nunca grava no state.json do app principal
   isDirty = true;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistState, 400);
@@ -404,30 +434,33 @@ async function persistState() {
 // ---------------------------------------------------------------------------
 async function init() {
   let loaded = null;
-  if (!STANDALONE_ACCOUNT) {
+  if (!STANDALONE_ACCOUNTS) {
     try { loaded = await window.nativeAPI.loadState(); } catch (err) { console.error('Erro ao carregar estado salvo', err); }
   }
 
-  if (STANDALONE_ACCOUNT) {
-    // Novo grid independente com só essa conta (mesma partition/sessão dela).
+  if (STANDALONE_ACCOUNTS) {
+    // Novo grid independente só com essas contas (mesma partition/sessão de cada uma).
     state.settings = defaultSettings();
     const wsId = state.nextWorkspaceId++;
+    const first = STANDALONE_ACCOUNTS[0];
     const ws = {
-      id: wsId, name: STANDALONE_ACCOUNT.name || 'Idle Hub', color: COLORS[(STANDALONE_ACCOUNT.colorIdx || 0) % COLORS.length],
-      iconKey: STANDALONE_ACCOUNT.iconKey || 'apps', defaultUrl: STANDALONE_ACCOUNT.url || DEFAULT_URL, layout: 'auto', accounts: [],
+      id: wsId, name: STANDALONE_ACCOUNTS.length > 1 ? `${STANDALONE_ACCOUNTS.length} contas` : (first.name || 'Idle Hub'),
+      color: COLORS[(first.colorIdx || 0) % COLORS.length], iconKey: first.iconKey || 'apps',
+      defaultUrl: first.url || DEFAULT_URL, layout: 'auto', accounts: [],
     };
     state.workspaces.push(ws);
     state.activeWorkspaceId = wsId;
     // Semente alta pro contador de ids: contas novas criadas só nesta janela
-    // (via "Adicionar conta") não podem colidir com o id/partition da conta
-    // real que abriu a janela nem com nenhuma outra do app principal.
+    // (via "Adicionar conta") não podem colidir com os ids/partitions das
+    // contas reais que abriram a janela nem com nenhuma outra do app principal.
     state.nextAccountId = Date.now();
-    const accId = STANDALONE_ACCOUNT.id;
-    ws.accounts.push({
-      id: accId, name: STANDALONE_ACCOUNT.name || t('accountWord'), url: STANDALONE_ACCOUNT.url, defaultUrl: STANDALONE_ACCOUNT.url,
-      partition: STANDALONE_ACCOUNT.partition, colorIdx: STANDALONE_ACCOUNT.colorIdx || 0, iconKey: STANDALONE_ACCOUNT.iconKey || 'apps',
-      status: 'open', muted: !!STANDALONE_ACCOUNT.muted, zoomFactor: STANDALONE_ACCOUNT.zoomFactor || 1,
-      createdAt: Date.now(), webContentsId: null, pid: null,
+    STANDALONE_ACCOUNTS.forEach((sa) => {
+      ws.accounts.push({
+        id: sa.id, name: sa.name || t('accountWord'), url: sa.url, defaultUrl: sa.url,
+        partition: sa.partition, colorIdx: sa.colorIdx || 0, iconKey: sa.iconKey || 'apps',
+        status: 'open', muted: !!sa.muted, zoomFactor: sa.zoomFactor || 1,
+        createdAt: Date.now(), webContentsId: null, pid: null,
+      });
     });
   } else if (loaded && loaded.workspaces && loaded.workspaces.length) {
     state = loaded;
@@ -441,6 +474,13 @@ async function init() {
       ws.accounts.forEach((a) => { if (!a.zoomFactor) a.zoomFactor = 1; if (!a.iconKey) a.iconKey = 'apps'; a.webContentsId = null; a.pid = null; });
     });
     if (state.settings.reabrirUltimoWorkspace === false) state.activeWorkspaceId = state.workspaces[0].id;
+    // Instalação já existente (de antes desse recurso): adiciona o workspace
+    // de comunidade uma única vez. Se o usuário apagar depois, essa flag
+    // (persistida) impede que ele volte sozinho.
+    if (!state.communityLinksAdded) {
+      state.communityLinksAdded = true;
+      state.workspaces.push(buildCommunityWorkspace());
+    }
   } else {
     state.settings = defaultSettings();
     const wsId = state.nextWorkspaceId++;
@@ -453,6 +493,10 @@ async function init() {
       partition: `persist:conta-${accId}`, colorIdx: 0, status: 'open', muted: false, zoomFactor: 1,
       createdAt: Date.now(), webContentsId: null, pid: null,
     });
+    // Workspace padrão com atalhos pra comunidade — sem contas, só os
+    // botões de link rápido na toolbar. Pode ser apagado normalmente.
+    state.communityLinksAdded = true;
+    state.workspaces.push(buildCommunityWorkspace());
   }
 
   if (!state.activeWorkspaceId) state.activeWorkspaceId = state.workspaces[0].id;
@@ -463,10 +507,11 @@ async function init() {
   applyCleanMode();
   applyPresentationMode();
   applyEcoMode();
-  if (STANDALONE_ACCOUNT) hideStandaloneChrome();
+  if (STANDALONE_ACCOUNTS) hideStandaloneChrome();
   renderWorkspaceRail();
   renderSidebar();
   renderGrid();
+  renderQuickLinks();
   updateStatusBar();
   updateNavButtons();
   updateZoomLabel();
@@ -477,7 +522,7 @@ async function init() {
   // As credenciais salvas continuam valendo (mesmo id/mesma conta real), mas
   // não faz sentido checar atualização a cada janela avulsa aberta.
   await loadCredentials();
-  if (!STANDALONE_ACCOUNT) checkForUpdatesOnStartup();
+  if (!STANDALONE_ACCOUNTS) checkForUpdatesOnStartup();
 }
 
 // ---------------------------------------------------------------------------
@@ -613,7 +658,7 @@ function switchWorkspace(id) {
   if (state.activeWorkspaceId === id) return;
   state.activeWorkspaceId = id;
   activeAccountId = null;
-  renderWorkspaceRail(); renderSidebar(); renderGrid(); updateStatusBar();
+  renderWorkspaceRail(); renderSidebar(); renderGrid(); renderQuickLinks(); updateStatusBar();
   updateNavButtons(); updateZoomLabel(); updateMuteButton();
 }
 function reorderWorkspace(draggedId, targetId) {
@@ -822,23 +867,72 @@ function closeAccount(id) {
 // conta, então login/cookies continuam sincronizados com o painel do grid —
 // é a mesma sessão sendo exibida em duas janelas, não uma cópia.
 // ---------------------------------------------------------------------------
+function accountToWindowPayload(acc) {
+  return {
+    id: acc.id,
+    name: acc.name,
+    url: normalizeUrl(acc.url || acc.defaultUrl || DEFAULT_URL),
+    partition: acc.partition,
+    zoomFactor: acc.zoomFactor || 1,
+    muted: !!acc.muted,
+    colorIdx: acc.colorIdx || 0,
+    iconKey: acc.iconKey || 'apps',
+  };
+}
 async function openAccountInWindow(id) {
   const acc = getAccountById(id);
   if (!acc) return;
-  const url = normalizeUrl(acc.url || acc.defaultUrl || DEFAULT_URL);
   try {
-    await window.nativeAPI.openAccountWindow({
-      accountId: acc.id,
-      url,
-      partition: acc.partition,
-      title: acc.name,
-      zoomFactor: acc.zoomFactor || 1,
-      muted: !!acc.muted,
-      colorIdx: acc.colorIdx || 0,
-      iconKey: acc.iconKey || 'apps',
-    });
+    await window.nativeAPI.openAccountWindow({ accounts: [accountToWindowPayload(acc)] });
   } catch (err) {
     console.error('Erro ao abrir conta em nova janela:', err);
+  }
+}
+// Abre TODAS as contas atualmente marcadas (Ctrl+clique na sidebar) juntas,
+// formando um grid novo numa única janela avulsa.
+async function openSelectedAccountsInWindow() {
+  if (selectedAccountIds.size < 2) return;
+  const ws = getActiveWorkspace();
+  if (!ws) return;
+  const accounts = ws.accounts.filter((a) => selectedAccountIds.has(a.id)).map(accountToWindowPayload);
+  if (accounts.length < 2) return;
+  try {
+    await window.nativeAPI.openAccountWindow({ accounts });
+  } catch (err) {
+    console.error('Erro ao abrir contas selecionadas em nova janela:', err);
+  }
+  selectedAccountIds.clear();
+  renderSidebar();
+  updateMultiOpenButton();
+}
+function toggleAccountSelection(id) {
+  if (selectedAccountIds.has(id)) selectedAccountIds.delete(id);
+  else selectedAccountIds.add(id);
+  renderSidebar();
+  updateMultiOpenButton();
+}
+function ensureMultiOpenButton() {
+  let btn = $('#open-selected-window-btn');
+  if (btn) return btn;
+  const footer = document.querySelector('.sidebar-footer');
+  if (!footer) return null;
+  btn = document.createElement('button');
+  btn.id = 'open-selected-window-btn';
+  btn.style.display = 'none';
+  btn.innerHTML = `${ICONS_MINI.openWindow}<span></span>`;
+  btn.addEventListener('click', openSelectedAccountsInWindow);
+  footer.appendChild(btn);
+  return btn;
+}
+function updateMultiOpenButton() {
+  const btn = ensureMultiOpenButton();
+  if (!btn) return;
+  const n = selectedAccountIds.size;
+  if (n >= 2) {
+    btn.style.display = '';
+    btn.querySelector('span').textContent = t('openSelectedInWindow').replace('{n}', n);
+  } else {
+    btn.style.display = 'none';
   }
 }
 function closeAllAccountsOfActiveWorkspace() {
@@ -986,6 +1080,10 @@ function renderSidebar() {
     item.className = 'account-item' + (acc.id === activeAccountId ? ' active' : '') + (acc.status === 'closed' ? ' closed' : '');
     item.dataset.id = acc.id;
     item.draggable = true;
+    if (selectedAccountIds.has(acc.id)) {
+      item.style.outline = '2px solid #38bdf8';
+      item.style.outlineOffset = '-2px';
+    }
     const statsLine = acc.status === 'open' ? `CPU —  RAM —` : '';
     item.innerHTML = `
       <div class="row1">
@@ -996,7 +1094,10 @@ function renderSidebar() {
       <div class="row2">${acc.status === 'open' ? t('statusOnline') + ' · ' + formatUptime(acc.createdAt) : t('statusClosed')}</div>
       <div class="row3" data-stats="${acc.id}">${statsLine}</div>
     `;
-    item.addEventListener('click', () => { if (acc.status === 'closed') openAccount(acc.id); else setActiveAccount(acc.id); });
+    item.addEventListener('click', (e) => {
+      if (e.ctrlKey || e.metaKey) { toggleAccountSelection(acc.id); return; }
+      if (acc.status === 'closed') openAccount(acc.id); else setActiveAccount(acc.id);
+    });
     item.addEventListener('contextmenu', (e) => { e.preventDefault(); openContextMenu(e.clientX, e.clientY, acc.id); });
     item.addEventListener('dragstart', (e) => { item.classList.add('dragging'); e.dataTransfer.setData('text/acc-id', String(acc.id)); });
     item.addEventListener('dragend', () => item.classList.remove('dragging'));
@@ -1011,6 +1112,30 @@ function renderSidebar() {
   });
 }
 $('#close-all-btn').addEventListener('click', closeAllAccountsOfActiveWorkspace);
+
+// ---------------------------------------------------------------------------
+// Links rápidos do workspace ativo (ex: site oficial, Discord, votação) —
+// abrem sempre no navegador padrão do sistema, nunca dentro do app. Só
+// aparecem quando o workspace ativo tem "quickLinks" configurados com URL
+// preenchida. Ficam na toolbar principal, à esquerda do botão de volume.
+// ---------------------------------------------------------------------------
+function renderQuickLinks() {
+  document.querySelectorAll('.quicklink-btn').forEach((b) => b.remove());
+  const ws = getActiveWorkspace();
+  if (!ws || !Array.isArray(ws.quickLinks) || !ws.quickLinks.length) return;
+  const toolbar = $('#toolbar');
+  const anchor = $('#topbar-mute');
+  if (!toolbar || !anchor) return;
+  ws.quickLinks.forEach((link) => {
+    if (!link || !link.url) return; // sem URL configurada ainda — não mostra botão vazio
+    const btn = document.createElement('button');
+    btn.className = 'btn-icon quicklink-btn';
+    btn.title = link.label || link.url;
+    btn.innerHTML = QUICKLINK_ICONS[link.icon] || ICONS_MINI.openWindow;
+    btn.addEventListener('click', () => window.nativeAPI.openExternal(link.url));
+    toolbar.insertBefore(btn, anchor);
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Grid principal — mantém webviews de TODOS os workspaces montadas (nunca
@@ -1258,6 +1383,33 @@ const RAF_THROTTLE_INJECT = `(function(){
   };
 })();`;
 
+// ---------------------------------------------------------------------------
+// Volume mestre: o Electron só tem mudo/não-mudo por webview (não tem "volume
+// 0-100%" nativo), então pra ter um slider de verdade a gente injeta um
+// script na página que ajusta a propriedade .volume dos elementos de áudio
+// e vídeo existentes E futuros (jogos idle costumam criar <audio> depois do
+// carregamento inicial, daí o MutationObserver).
+// ---------------------------------------------------------------------------
+const VOLUME_INJECT = `(function(){
+  if (window.__idleHubVolumePatched) return;
+  window.__idleHubVolumePatched = true;
+  window.__idleHubVolume = typeof window.__idleHubVolume === 'number' ? window.__idleHubVolume : 1;
+  function apply(el) { try { el.volume = window.__idleHubVolume; } catch (e) {} }
+  function applyAll() { document.querySelectorAll('audio,video').forEach(apply); }
+  window.__idleHubSetVolume = function(v) { window.__idleHubVolume = v; applyAll(); };
+  applyAll();
+  var obs = new MutationObserver(function(muts){
+    muts.forEach(function(m){
+      (m.addedNodes || []).forEach(function(n){
+        if (!n.querySelectorAll) return;
+        if (n.tagName === 'AUDIO' || n.tagName === 'VIDEO') apply(n);
+        n.querySelectorAll('audio,video').forEach(apply);
+      });
+    });
+  });
+  obs.observe(document.documentElement || document.body, { childList: true, subtree: true });
+})();`;
+
 const BACKGROUND_THROTTLE_MS = 1500; // contas ocultas (outro workspace, ou cobertas no layout "Painel único")
 const ECO_ACTIVE_THROTTLE_MS = 200;  // conta visível, mas com Modo Eco ligado
 const rafThrottleState = new Map(); // accountId -> valor já aplicado (evita mandar executeJavaScript à toa)
@@ -1324,7 +1476,11 @@ function buildCard(acc) {
 
   webview.addEventListener('dom-ready', () => {
     acc.webContentsId = webview.getWebContentsId();
-    if (acc.muted) webview.setAudioMuted(true);
+    const masterVol = state.settings.volumeMestre != null ? state.settings.volumeMestre : 100;
+    webview.setAudioMuted(!!acc.muted || masterVol <= 0);
+    webview.executeJavaScript(VOLUME_INJECT).then(() => {
+      webview.executeJavaScript(`window.__idleHubSetVolume && window.__idleHubSetVolume(${masterVol / 100});`);
+    }).catch((err) => console.error('Erro ao aplicar volume mestre:', err));
     webview.setZoomFactor(acc.zoomFactor || 1);
     if (acc.id === activeAccountId) { updateNavButtons(); updateZoomLabel(); }
     rafThrottleState.delete(acc.id); // página recarregou — a patch some, precisa injetar de novo
@@ -1367,9 +1523,9 @@ function buildCard(acc) {
   header.querySelector('.mute').addEventListener('click', (ev) => {
     ev.stopPropagation();
     acc.muted = !acc.muted;
-    webview.setAudioMuted(acc.muted);
+    const masterVol = state.settings.volumeMestre != null ? state.settings.volumeMestre : 100;
+    webview.setAudioMuted(acc.muted || masterVol <= 0);
     header.querySelector('.mute').innerHTML = muteIcon(acc.muted);
-    if (acc.id === activeAccountId) updateMuteButton();
     schedulePersist();
   });
   header.querySelector('.reload').addEventListener('click', (ev) => { ev.stopPropagation(); webview.reload(); });
@@ -1516,24 +1672,71 @@ addressBar.addEventListener('keydown', (e) => { if (e.key === 'Enter') navigateA
 // ---------------------------------------------------------------------------
 // Toolbar: mudo / zoom / downloads / modo tela limpa / tela cheia / config / ajuda
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Volume mestre (afeta TODAS as contas abertas, de todos os workspaces, ao
+// mesmo tempo) — reaproveita o ícone/botão que antes só silenciava a conta
+// ativa. Um popover com slider abre ao clicar, igual ao popover de zoom.
+// ---------------------------------------------------------------------------
 function updateMuteButton() {
-  const acc = getActiveAccount();
+  const vol = state.settings.volumeMestre != null ? state.settings.volumeMestre : 100;
   const btn = $('#topbar-mute');
-  btn.innerHTML = muteIcon(acc ? acc.muted : false);
-  btn.classList.toggle('active-state', !!(acc && acc.muted));
+  btn.innerHTML = muteIcon(vol <= 0);
+  btn.classList.toggle('active-state', vol <= 0);
+  const slider = $('#volume-slider');
+  if (slider && document.activeElement !== slider) slider.value = vol;
+  const label = $('#volume-label');
+  if (label) label.textContent = `${vol}%`;
 }
-$('#topbar-mute').addEventListener('click', () => {
-  const acc = getActiveAccount();
-  if (!acc) return;
-  acc.muted = !acc.muted;
-  const webview = getActiveWebview();
-  if (webview) webview.setAudioMuted(acc.muted);
-  const card = getActiveCard();
-  const cardMuteBtn = card && card.querySelector('.mute');
-  if (cardMuteBtn) cardMuteBtn.innerHTML = muteIcon(acc.muted);
+function applyMasterVolume(vol) {
+  vol = Math.max(0, Math.min(100, Math.round(vol)));
+  state.settings.volumeMestre = vol;
+  const masterMuted = vol <= 0;
+  document.querySelectorAll('.account-card').forEach((card) => {
+    const acc = getAccountById(Number(card.dataset.id));
+    const webview = card.querySelector('webview');
+    if (!acc || !webview) return;
+    try {
+      webview.setAudioMuted(masterMuted || !!acc.muted);
+      webview.executeJavaScript(`window.__idleHubSetVolume && window.__idleHubSetVolume(${vol / 100});`).catch(() => {});
+    } catch (err) { /* webview pode não estar pronta ainda */ }
+  });
   updateMuteButton();
   schedulePersist();
-});
+}
+function toggleMasterMute() {
+  const vol = state.settings.volumeMestre != null ? state.settings.volumeMestre : 100;
+  if (vol > 0) { lastMasterVolume = vol; applyMasterVolume(0); }
+  else { applyMasterVolume(lastMasterVolume || 100); }
+}
+function ensureVolumePopover() {
+  let pop = $('#volume-popover');
+  if (pop) return pop;
+  pop = document.createElement('div');
+  pop.id = 'volume-popover';
+  pop.className = 'hidden';
+  pop.style.cssText = 'position:fixed; background:#12151c; border:1px solid #2a2f3a; border-radius:10px; padding:12px 14px; display:flex; align-items:center; gap:10px; min-width:180px; z-index:9999; box-shadow:0 8px 24px rgba(0,0,0,.45);';
+  pop.innerHTML = `<input id="volume-slider" type="range" min="0" max="100" value="100" style="flex:1;" /><span id="volume-label" style="font-size:12px; color:#e5e7eb; min-width:36px; text-align:right;">100%</span>`;
+  document.body.appendChild(pop);
+  pop.addEventListener('click', (e) => e.stopPropagation());
+  pop.querySelector('#volume-slider').addEventListener('input', (e) => applyMasterVolume(Number(e.target.value)));
+  return pop;
+}
+function toggleVolumePopover() {
+  const pop = ensureVolumePopover();
+  const btn = $('#topbar-mute');
+  if (pop.classList.contains('hidden')) {
+    const r = btn.getBoundingClientRect();
+    pop.style.top = `${r.bottom + 6}px`;
+    pop.style.left = `${Math.max(8, r.right - 180)}px`;
+    pop.classList.remove('hidden');
+    $('#zoom-popover').classList.add('hidden');
+    $('#downloads-popover').classList.add('hidden');
+  } else {
+    pop.classList.add('hidden');
+  }
+}
+document.addEventListener('click', () => { const p = $('#volume-popover'); if (p) p.classList.add('hidden'); });
+$('#topbar-mute').addEventListener('click', (e) => { e.stopPropagation(); toggleVolumePopover(); });
 
 function updateZoomLabel() {
   const acc = getActiveAccount();
@@ -1711,18 +1914,19 @@ function runAction(id) {
         if (w) w.reload();
       });
       break;
-    case 'muteActive': $('#topbar-mute').click(); break;
+    case 'muteActive': toggleMasterMute(); break;
     case 'muteAll': {
       const open = getOpenAccountsOfActiveWorkspace();
       const anyUnmuted = open.some((a) => !a.muted);
+      const masterVol = state.settings.volumeMestre != null ? state.settings.volumeMestre : 100;
       open.forEach((acc) => {
         acc.muted = anyUnmuted;
         const w = grid.querySelector(`.account-card[data-id="${acc.id}"] webview`);
-        if (w) w.setAudioMuted(anyUnmuted);
+        if (w) w.setAudioMuted(anyUnmuted || masterVol <= 0);
         const btn = grid.querySelector(`.account-card[data-id="${acc.id}"] .mute`);
         if (btn) btn.innerHTML = muteIcon(anyUnmuted);
       });
-      updateMuteButton(); schedulePersist();
+      schedulePersist();
       break;
     }
     case 'focusAddress': addressBar.focus(); addressBar.select(); break;
