@@ -61,6 +61,7 @@ Ideal para quem gerencia múltiplos perfis em jogos, redes sociais, e‑commerce
 | :---: | :--- | :--- |
 | 📂 | **Workspaces** | Organize suas contas em categorias visuais com ícones, cores e layouts personalizados. Crie, duplique, renomeie e reordene via drag‑and‑drop. |
 | 👤 | **Contas Isoladas** | Cada conta roda em uma partição separada do Electron. Cookies, cache, localStorage e sessões são totalmente independentes. |
+| 🪟 | **Abrir em Nova Janela** | Clique direito numa conta (ou no ícone no cabeçalho do painel) e escolha "Abrir em nova janela": ela abre num grid próprio, independente, mantendo a mesma sessão (login/cookies) do painel original. |
 | 🧩 | **Layouts Flexíveis** | Escolha entre grade automática, painel único, colunas, linhas ou livre para organizar os painéis de cada workspace. |
 | 🔄 | **Recarregamento em Segundo Plano** | Troque entre workspaces sem perder o estado das contas — tudo permanece em memória e continua rodando em background. |
 | 🔒 | **AutoPreenchimento de Conta** | Login/senha por conta. Preenche sozinho ao carregar o site (com cada site você pode desligar) ou manualmente com Ctrl+Shift+F. |
@@ -87,22 +88,5 @@ Baixe a versão LTS em [nodejs.org](https://nodejs.org) e instale (é next, next
 **2. Baixe este código**
 Clique no botão verde **Code** aqui em cima e depois em **Download ZIP**. Extraia a pasta onde quiser. Quem usa Git pode clonar:
 ```bash
-git clone https://github.com/Diinhow/Idle-Hub.git
+git clone [https://github.com/Diinhow/Idle-Hub.git](https://github.com/Diinhow/Idle-Hub.git)
 cd Idle-Labs
-```
-## Como rodar (modo desenvolvimento)
-```bash
-npm install
-npm start
-```
-
-## Como gerar um instalador (.exe / .dmg / .AppImage)
-```bash
-npm install
-npm run dist
-```
-
-## Licença
-
-MIT License. Projeto independente.
-Idle Hub is made available under the MIT License — you are free to use it for commercial, non-commercial, closed or open projects.
