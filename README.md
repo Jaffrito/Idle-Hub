@@ -3,7 +3,7 @@
 <div align="center">
 <img src="docs/banner_idlehub.png" width="880" alt="Banner Idle Hub">
 
-![Electron](https://img.shields.io/badge/Electron-31.0.0-47848f?style=for-the-badge&logo=electron)
+![Electron](https://img.shields.io/badge/Electron-44.1.1-47848f?style=for-the-badge&logo=electron)
 ![License](https://img.shields.io/badge/License-MIT-f1c644?style=for-the-badge&logo=opensource)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-0a0d14?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Ativo-4caf50?style=for-the-badge)
@@ -11,6 +11,10 @@
 **Organize contas ilimitadas em workspaces isolados — cada sessão com seus próprios cookies, cache e logins.**
 
 </div>
+
+---
+
+> 🍴 **Este é um fork** do [Idle Hub original](https://github.com/Diinhow/Idle-Hub), criado por [Diinhow](https://github.com/Diinhow). Todo o crédito da base do projeto é dele — aqui eu adiciono e ajusto algumas funcionalidades por cima. Veja o que mudou na seção [Sobre este fork](#-sobre-este-fork).
 
 ---
 
@@ -61,7 +65,6 @@ Ideal para quem gerencia múltiplos perfis em jogos, redes sociais, e‑commerce
 | :---: | :--- | :--- |
 | 📂 | **Workspaces** | Organize suas contas em categorias visuais com ícones, cores e layouts personalizados. Crie, duplique, renomeie e reordene via drag‑and‑drop. |
 | 👤 | **Contas Isoladas** | Cada conta roda em uma partição separada do Electron. Cookies, cache, localStorage e sessões são totalmente independentes. |
-| 🪟 | **Abrir em Nova Janela** | Clique direito numa conta (ou no ícone no cabeçalho do painel) e escolha "Abrir em nova janela": ela abre num grid próprio, independente, mantendo a mesma sessão (login/cookies) do painel original. |
 | 🧩 | **Layouts Flexíveis** | Escolha entre grade automática, painel único, colunas, linhas ou livre para organizar os painéis de cada workspace. |
 | 🔄 | **Recarregamento em Segundo Plano** | Troque entre workspaces sem perder o estado das contas — tudo permanece em memória e continua rodando em background. |
 | 🔒 | **AutoPreenchimento de Conta** | Login/senha por conta. Preenche sozinho ao carregar o site (com cada site você pode desligar) ou manualmente com Ctrl+Shift+F. |
@@ -88,5 +91,32 @@ Baixe a versão LTS em [nodejs.org](https://nodejs.org) e instale (é next, next
 **2. Baixe este código**
 Clique no botão verde **Code** aqui em cima e depois em **Download ZIP**. Extraia a pasta onde quiser. Quem usa Git pode clonar:
 ```bash
-git clone [https://github.com/Diinhow/Idle-Hub.git](https://github.com/Diinhow/Idle-Hub.git)
-cd Idle-Labs
+git clone https://github.com/Jaffrito/Idle-Hub.git
+cd Idle-Hub
+```
+## Como rodar (modo desenvolvimento)
+```bash
+npm install
+npm start
+```
+
+## Como gerar um instalador (.exe / .dmg / .AppImage)
+```bash
+npm install
+npm run dist
+```
+
+---
+
+## 🍴 Sobre este fork
+
+Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos ao [Diinhow](https://github.com/Diinhow)). Mudanças feitas aqui:
+
+- **v1.3.0** — Nova função "Abrir em nova janela": abre uma conta num grid próprio e independente, fora do painel principal, mantendo a mesma sessão (login/cookies).
+- Electron atualizado de 31.0.0 para 44.1.1.
+- Correções no README (link de clone quebrado e nome de pasta errado no passo a passo).
+
+## Licença
+
+MIT License. Projeto independente.
+Idle Hub is made available under the MIT License — you are free to use it for commercial, non-commercial, closed or open projects.
