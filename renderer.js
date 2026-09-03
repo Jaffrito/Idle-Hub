@@ -293,7 +293,7 @@ function muteIcon(muted) { return muted ? ICONS_MINI.soundOff : ICONS_MINI.sound
 
 const COLORS = ['#e3b341', '#38bdf8', '#34d399', '#f87171', '#a78bfa', '#fb923c', '#f472b6', '#22d3ee'];
 const ACCOUNT_COLORS = COLORS;
-const DEFAULT_URL = 'https://www.google.com/';
+const DEFAULT_URL = 'https://midgardidle.ro/';
 
 // ---------------------------------------------------------------------------
 // Estado global
@@ -1620,6 +1620,22 @@ $('#topbar-fullscreen').addEventListener('click', async () => { try { await wind
 $('#topbar-settings').addEventListener('click', () => openSettingsModal());
 $('#topbar-help').addEventListener('click', () => openShortcutsModal());
 
+
+// ---------------------------------------------------------------------------
+// Abertura de links do Midgard Idle no navegador padrão
+// ---------------------------------------------------------------------------
+$('#topbar-midgard-wiki').addEventListener('click', () => {
+  window.nativeAPI.openExternal('https://midgardidlewikifull.vercel.app/');
+});
+
+$('#topbar-midgard-ranking').addEventListener('click', () => {
+  window.nativeAPI.openExternal('https://midgardidle.ro/rankings');
+});
+
+$('#topbar-midgard-discord').addEventListener('click', () => {
+  window.nativeAPI.openExternal('https://discord.gg/R7rRrFxBPd');
+});
+
 // ---------------------------------------------------------------------------
 // Atalhos de teclado — sistema com combinações remapeáveis pelo usuário
 // ---------------------------------------------------------------------------
@@ -2094,10 +2110,10 @@ $('#btn-close').addEventListener('click', () => window.nativeAPI.close());
 // Se preencher urlExterna, o botão Doar abre o link em vez do modal.
 // ---------------------------------------------------------------------------
 const DONATE_CONFIG = {
-  titulo: '☕ Apoie o Idle Hub',
+  titulo: '☕ Apoie o Midgard Idle Hub',
   subtitulo: 'Se o launcher te ajudou, um cafezinho via Pix é muito bem-vindo!',
   imagem: 'pix-qrcode.png',
-  codigoPix: '00020101021126580014br.gov.bcb.pix01368d6f750d-6713-4c9f-82c9-d8acf020463a5204000053039865802BR5920WANDERSON S F MORAES6006MACEIO62070503***63046A77',
+  codigoPix: '00020126580014BR.GOV.BCB.PIX0136c18ee687-2a17-48c1-9497-878dd35cbb0d5204000053039865802BR5925Jafre de Santana Belantan6009SAO PAULO62140510tSjUXn7FY46304EB58***63046A77',
   textoFechar: 'Fechar',
   textoCopiar: 'Copiar código Pix',
   textoCopiado: 'Código Pix copiado!',
