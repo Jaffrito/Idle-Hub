@@ -112,7 +112,7 @@ npm run dist
 
 ## 🍴 Sobre este fork (Midgard Idle Edition)
 
-Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos ao [Diinhow](https://github.com/Diinhow)). Esta versão foi adaptada e otimizada por **Jafre** especialmente para a comunidade do **Midgard Idle**.
+Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos ao [Diinhow](https://github.com/Diinhow)). Esta versão foi adaptada e otimizada por **Jaffrito** especialmente para a comunidade do **Midgard Idle**.
 
 ### 📦 Histórico de Versões (VemSer)
 
