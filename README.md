@@ -8,6 +8,8 @@
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-0a0d14?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Ativo-4caf50?style=for-the-badge)
 
+> 🎮 **Versão Adaptada para a Comunidade de Midgard Idle!**  
+> Este repositório é um fork dedicado do Idle Hub, customizado especificamente para facilitar o gerenciamento de múltiplas contas, acesso rápido à Wiki, Ranking e Discord do **[Midgard Idle](https://midgardidle.ro/)**.
 **Organize contas ilimitadas em workspaces isolados — cada sessão com seus próprios cookies, cache e logins.**
 
 </div>
@@ -108,13 +110,18 @@ npm run dist
 
 ---
 
-## 🍴 Sobre este fork
+## 🍴 Sobre este fork (Midgard Idle Edition)
 
-Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos ao [Diinhow](https://github.com/Diinhow)). Mudanças feitas aqui:
+Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos ao [Diinhow](https://github.com/Diinhow))[cite: 5]. Esta versão foi adaptada e otimizada por **Jafre** especialmente para a comunidade do **Midgard Idle**.
 
-- **v1.3.0** — Nova função "Abrir em nova janela": abre uma conta num grid próprio e independente, fora do painel principal, mantendo a mesma sessão (login/cookies).
-- Electron atualizado de 31.0.0 para 44.1.1.
-- Correções no README (link de clone quebrado e nome de pasta errado no passo a passo).
+### 📦 Histórico de Versões 
+
+- **v1.3.0 (Midgard Edition)** — Otimização inicial para a comunidade:
+  - **URL Padrão pré-configurada:** O inicializador já aponta de fábrica para o site oficial do Midgard Idle (`https://midgardidle.ro/`).
+  - **Atalhos rápidos na barra superior:** Acesso direto com um clique para a **Wiki**, **Ranking** e o **Discord** do jogo.
+  - **Nova função "Abrir em nova janela":** Abre contas específicas em um grid próprio e independente fora do painel principal, mantendo perfeitamente a mesma sessão sincronizada (login/cookies)[cite: 5].
+  - **Atualização de engine:** Electron atualizado da versão 31.0.0 para 44.1.1 para ganho de performance e estabilidade[cite: 5].
+  - Correções gerais de usabilidade e adaptações focadas na rotina dos jogadores[cite: 5].
 
 ## Licença
 
