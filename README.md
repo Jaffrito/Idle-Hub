@@ -112,16 +112,16 @@ npm run dist
 
 ## 🍴 Sobre este fork (Midgard Idle Edition)
 
-Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos ao [Diinhow](https://github.com/Diinhow))[cite: 5]. Esta versão foi adaptada e otimizada por **Jafre** especialmente para a comunidade do **Midgard Idle**.
+Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos ao [Diinhow](https://github.com/Diinhow)). Esta versão foi adaptada e otimizada por **Jafre** especialmente para a comunidade do **Midgard Idle**.
 
-### 📦 Histórico de Versões 
+### 📦 Histórico de Versões (VemSer)
 
 - **v1.3.0 (Midgard Edition)** — Otimização inicial para a comunidade:
   - **URL Padrão pré-configurada:** O inicializador já aponta de fábrica para o site oficial do Midgard Idle (`https://midgardidle.ro/`).
   - **Atalhos rápidos na barra superior:** Acesso direto com um clique para a **Wiki**, **Ranking** e o **Discord** do jogo.
-  - **Nova função "Abrir em nova janela":** Abre contas específicas em um grid próprio e independente fora do painel principal, mantendo perfeitamente a mesma sessão sincronizada (login/cookies)[cite: 5].
-  - **Atualização de engine:** Electron atualizado da versão 31.0.0 para 44.1.1 para ganho de performance e estabilidade[cite: 5].
-  - Correções gerais de usabilidade e adaptações focadas na rotina dos jogadores[cite: 5].
+  - **Nova função "Abrir em nova janela":** Abre contas específicas em um grid próprio e independente fora do painel principal, mantendo perfeitamente a mesma sessão sincronizada (login/cookies).
+  - **Atualização de engine:** Electron atualizado da versão 31.0.0 para 44.1.1 para ganho de performance e estabilidade.
+  - Correções gerais de usabilidade e adaptações focadas na rotina dos jogadores.
 
 ## Licença
 
