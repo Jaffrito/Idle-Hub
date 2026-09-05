@@ -1,7 +1,7 @@
 # ⚡ Idle Hub — Navegador Multi‑Sessão com Workspaces
 
 <div align="center">
-<img src="docs/banner_idlehub.png" width="880" alt="Banner Idle Hub">
+<img src="docs/new_banner_idlehub.png" width="880" alt="Banner Idle Hub">
 
 ![Electron](https://img.shields.io/badge/Electron-44.1.1-47848f?style=for-the-badge&logo=electron)
 ![License](https://img.shields.io/badge/License-MIT-f1c644?style=for-the-badge&logo=opensource)
