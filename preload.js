@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('nativeAPI', {
   saveState: (data) => ipcRenderer.invoke('save-state', data),
   loadState: () => ipcRenderer.invoke('load-state'),
   clearPartition: (partition) => ipcRenderer.invoke('clear-partition', partition),
+  clearCache: (partition) => ipcRenderer.invoke('clear-cache', partition),
 
   getVersions: () => ipcRenderer.invoke('get-versions'),
   getLoginItem: () => ipcRenderer.invoke('get-login-item'),

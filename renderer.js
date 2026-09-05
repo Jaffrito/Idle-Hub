@@ -1009,6 +1009,8 @@ function renderSidebar() {
     });
     accountListEl.appendChild(item);
   });
+  // Atualiza os botões do seletor rápido de contas (1-12) na barra superior
+  renderQuickAccounts();
 }
 $('#close-all-btn').addEventListener('click', closeAllAccountsOfActiveWorkspace);
 
@@ -2207,6 +2209,105 @@ async function refreshStats() {
   } catch (err) { console.error('Erro ao obter estatísticas', err); }
 }
 setInterval(refreshStats, 2000);
+
+// ---------------------------------------------------------------------------
+// Zeny/h — lê o "Saldo potencial/h" que o próprio jogo já mostra em cada
+// conta (via <dt>/<dd>) e soma de todas as contas abertas, em qualquer
+// workspace. Procura pelo TEXTO do rótulo, não pelas classes do Tailwind
+// (essas mudam fácil entre builds do jogo; o texto do rótulo é mais estável).
+// ---------------------------------------------------------------------------
+const EXTRACT_ZENY_INJECT = `(function(){
+  var dts = document.querySelectorAll('dt');
+  for (var i = 0; i < dts.length; i++) {
+    var label = (dts[i].textContent || '').trim().toLowerCase();
+    if (label.indexOf('saldo potencial') !== -1) {
+      var dd = dts[i].parentElement ? dts[i].parentElement.querySelector('dd') : null;
+      if (!dd) return null;
+      var raw = (dd.textContent || '').trim();
+      var cleaned = raw.replace(/[^0-9.,-]/g, '');
+      var intPart = cleaned.split(',')[0].replace(/\\./g, ''); // "." = milhar, vírgula = decimal (formato BR)
+      var num = parseInt(intPart, 10);
+      return isNaN(num) ? null : num;
+    }
+  }
+  return null;
+})();`;
+function formatZeny(n) { return Math.round(n).toLocaleString('pt-BR'); }
+function ensureZenyStatusEl() {
+  let el = $('#status-zeny');
+  if (el) return el;
+  const cpuEl = $('#status-cpu');
+  if (!cpuEl || !cpuEl.parentElement) return null;
+  el = document.createElement('span');
+  el.id = 'status-zeny';
+  el.style.marginLeft = '12px';
+  cpuEl.parentElement.insertBefore(el, cpuEl);
+  return el;
+}
+async function refreshZenyRates() {
+  const allOpen = state.workspaces.flatMap((w) => w.accounts.filter((a) => a.status === 'open'));
+  let total = 0, found = 0;
+  for (const acc of allOpen) {
+    const webview = grid.querySelector(`.account-card[data-id="${acc.id}"] webview`);
+    if (!webview) continue;
+    try {
+      const val = await webview.executeJavaScript(EXTRACT_ZENY_INJECT);
+      if (typeof val === 'number' && !isNaN(val)) {
+        acc.zenyRate = val;
+        total += val;
+        found++;
+      }
+    } catch (err) {
+      // conta pode estar numa tela sem esse elemento (login, splash, etc) — ignora nesse ciclo
+    }
+  }
+  const el = ensureZenyStatusEl();
+  if (el) el.textContent = found > 0 ? `${formatZeny(total)} Zeny/h (${found} conta${found > 1 ? 's' : ''})` : '';
+}
+setInterval(refreshZenyRates, 5000);
+
+// ---------------------------------------------------------------------------
+// Botão de pânico: limpa o cache HTTP e recarrega TODAS as contas abertas
+// (de todos os workspaces), ignorando cache — pra usar quando o jogo
+// atualiza e o cache antigo trava a tela. NÃO mexe em cookies, login nem
+// nas credenciais salvas no Idle Hub — só força buscar os arquivos
+// (JS/CSS/imagens) de novo, a conta continua logada depois.
+// ---------------------------------------------------------------------------
+function ensurePanicButton() {
+  let btn = $('#panic-btn');
+  if (btn) return btn;
+  const toolbar = $('#toolbar');
+  const anchor = $('#topbar-mute');
+  if (!toolbar || !anchor) return null;
+  btn = document.createElement('button');
+  btn.id = 'panic-btn';
+  btn.className = 'btn-icon';
+  btn.title = 'Botão de pânico: limpa cache e recarrega todas as contas (use após atualização do jogo)';
+  btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
+  btn.addEventListener('click', triggerPanicReload);
+  toolbar.insertBefore(btn, anchor);
+  return btn;
+}
+async function triggerPanicReload() {
+  const allOpen = state.workspaces.flatMap((w) => w.accounts.filter((a) => a.status === 'open'));
+  if (!allOpen.length) return;
+  showConfirm(
+    'Botão de pânico',
+    `Isso vai limpar o cache e recarregar TODAS as ${allOpen.length} conta(s) aberta(s), de todos os workspaces. Login e credenciais salvas continuam intactos — só busca a versão mais nova do jogo de novo. Continuar?`,
+    async () => {
+      for (const acc of allOpen) {
+        try { await window.nativeAPI.clearCache(acc.partition); }
+        catch (err) { console.error(`Erro ao limpar cache da conta ${acc.name}:`, err); }
+        const webview = grid.querySelector(`.account-card[data-id="${acc.id}"] webview`);
+        if (webview) {
+          try { webview.reloadIgnoringCache(); }
+          catch (err) { console.error(`Erro ao recarregar a conta ${acc.name}:`, err); }
+        }
+      }
+    }
+  );
+}
+ensurePanicButton();
 // Atualiza só o texto do cronômetro "Online · Xm Ys" a cada segundo, sem
 // recriar a lista inteira da sidebar (evita descartar nós/listeners à toa).
 function updateUptimeTimers() {
@@ -2598,6 +2699,65 @@ function initTooltipSystem() {
 initTooltipSystem();
 
 // ---------------------------------------------------------------------------
+// Seletor Rápido de Contas (1-12) na Barra Superior
+// ---------------------------------------------------------------------------
+function renderQuickAccounts() {
+  const bar = $('#quick-accounts-bar');
+  if (!bar) return;
+  bar.innerHTML = '';
+  
+  const ws = getActiveWorkspace();
+  if (!ws || !ws.accounts.length) return;
+
+  ws.accounts.slice(0, 12).forEach((acc, index) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'quick-acc-btn' + (acc.id === activeAccountId ? ' active' : '') + (acc.status === 'closed' ? ' closed' : '');
+    btn.textContent = index + 1;
+    btn.dataset.tooltip = `${acc.name} (${acc.status === 'open' ? 'Online' : 'Fechada'})`;
+    
+    btn.addEventListener('click', () => {
+      if (acc.status === 'closed') {
+        openAccount(acc.id);
+      } else {
+        setActiveAccount(acc.id);
+      }
+    });
+    
+    bar.appendChild(btn);
+  });
+}
+// ---------------------------------------------------------------------------
+// Monitoramento periódico de status das contas ativas (HP, SP, Nome, Classe)
+//---------------------------------------------------------------------------
+
+function iniciarMonitoramentoStatus() {
+  setInterval(() => {
+    const webviews = document.querySelectorAll('webview'); 
+    webviews.forEach((webview, index) => {
+      if (webview && typeof webview.executeJavaScript === 'function') {
+        webview.executeJavaScript(`
+          (() => {
+            const name = document.querySelector('.font-ro.text-base.font-bold')?.innerText || 'Conta Ociosa';
+            const job = document.querySelector('.font-ro.text-sm.font-bold.text-ro-stat-label-text\\/60')?.innerText || '';
+            const hpText = document.querySelector('[aria-label="HP"] .ro-vital-gauge-text')?.innerText || '0 / 0';
+            const spText = document.querySelector('[aria-label="SP"] .ro-vital-gauge-text')?.innerText || '0 / 0';
+            return { name, job, hpText, spText };
+          })()
+        `).then(data => {
+          const numeroConta = index + 1;
+          const cardSidebar = document.getElementById(`conta-sidebar-${numeroConta}`);
+          if (cardSidebar) {
+            cardSidebar.querySelector('.hp-label').innerText = data.hpText;
+            cardSidebar.querySelector('.name-label').innerText = data.name;
+          }
+        }).catch(err => {});
+      }
+    });
+  }, 3000);
+}
+
+// ---------------------------------------------------------------------------
 // Start
 // ---------------------------------------------------------------------------
 window.addEventListener('resize', () => {
@@ -2608,3 +2768,4 @@ window.addEventListener('resize', () => {
   }
 });
 init();
+iniciarMonitoramentoStatus();

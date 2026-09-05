@@ -123,6 +123,13 @@ Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos a
   - **Atualização de engine:** Electron atualizado da versão 31.0.0 para 44.1.1 para ganho de performance e estabilidade.
   - Correções gerais de usabilidade e adaptações focadas na rotina dos jogadores.
 
+- **v1.4.0 (Midgard Edition)** — Seletor Rápido, Botão de Pânico e Performance:
+  - **Seletor Rápido de Contas (1–12):** Implementado na barra superior para alternância ágil entre instâncias ativas do jogo.
+  - **Botão de Pânico (Recarregamento Global):** Novo botão na barra superior que limpa o cache HTTP e recarrega todas as contas de todos os workspaces simultaneamente após confirmação. Ideal para destravar telas após atualizações do jogo, mantendo intactos os dados de login, cookies e credenciais.
+  - **Otimização de Background e Modo Eco:** Gerenciamento inteligente de ciclos de atualização visual (requestAnimationFrame), reduzindo o consumo de CPU em contas ocultas ou em segundo plano sem impactar o progresso idle.
+  - **Atalhos Oficiais Integrados:** Acesso rápido por botão na interface para a Wiki, página de Rankings e servidor do Discord do Midgard Idle.
+  - **Isolamento de Sessão:** Manutenção das partições independentes (persist:conta-id) para garantir cookies, caches e logins totalmente separados por conta.
+
 ## Licença
 
 MIT License. Projeto independente.

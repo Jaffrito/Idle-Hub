@@ -38,6 +38,14 @@ function createWindow() {
 
   mainWindow.loadFile('index.html');
 }
+// Impede que o Chromium reduza a frequência de temporizadores (setInterval/setTimeout) em segundo plano
+app.commandLine.appendSwitch('disable-background-timer-throttling');
+
+// Desativa a suspensão de processos de renderização quando a janela perde o foco ou é oculta
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+
+// Evita que janelas encobertas por outros aplicativos entrem em modo de economia de recursos
+app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null); // remove qualquer resquício do menu padrão (File/Edit/View/Window/Help)
@@ -158,6 +166,20 @@ ipcMain.handle('clear-partition', async (event, partition) => {
     return true;
   } catch (err) {
     console.error('Falha ao limpar partição:', err);
+    return false;
+  }
+});
+
+// "Botão de pânico": limpa só o CACHE HTTP de uma partição (JS/CSS/imagens
+// já baixados) — diferente do clear-partition acima, isso NÃO mexe em
+// cookies, localStorage nem login. Usado quando o jogo atualiza e o cache
+// antigo trava a tela; a conta continua logada depois.
+ipcMain.handle('clear-cache', async (event, partition) => {
+  try {
+    await session.fromPartition(partition).clearCache();
+    return true;
+  } catch (err) {
+    console.error('Falha ao limpar cache:', err);
     return false;
   }
 });
