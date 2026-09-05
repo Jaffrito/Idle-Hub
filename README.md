@@ -96,6 +96,9 @@ Clique no botão verde **Code** aqui em cima e depois em **Download ZIP**. Extra
 git clone https://github.com/Jaffrito/Idle-Hub.git
 cd Idle-Hub
 ```
+**3. Execute**
+Dentro da pasta execute o arquivo Abrir IdleHub (.vbs).
+
 ## Como rodar (modo desenvolvimento)
 ```bash
 npm install
