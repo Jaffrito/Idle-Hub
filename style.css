@@ -650,11 +650,18 @@ body.clean-mode.edge-reveal.reveal-left #sidebar {
 
 .brand-name {
     font-size: 13px;
-    color: #c3cadd
+    color: #c3cadd;
+}
+
+.brand-name .brand-midgard {
+    color: #2da3ff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
 }
 
 .brand-name b {
-    color: #c89b3c
+    color: #ffbb00;
+    text-shadow: 0px 0px 4px rgba(255, 187, 0, 0.3);
 }
 
 .titlebar-drag {
