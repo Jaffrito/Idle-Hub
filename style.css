@@ -599,6 +599,13 @@ body.clean-mode.edge-reveal.reveal-left #sidebar {
     left: 56px
 }
 
+/* Tela cheia (F11): esconde a titlebar custom (nome do app, minimizar,
+   maximizar, fechar) — o Windows já esconde a própria barra de tarefas
+   sozinho quando a janela entra em fullscreen de verdade. */
+body.is-fullscreen #titlebar {
+    display: none
+}
+
 #app {
     display: flex;
     height: 100vh;

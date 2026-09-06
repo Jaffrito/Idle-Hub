@@ -1618,7 +1618,13 @@ document.addEventListener('click', () => $('#downloads-popover').classList.add('
 $('#topbar-eco').addEventListener('click', toggleEcoMode);
 $('#topbar-presentation').addEventListener('click', togglePresentationMode);
 $('#topbar-cleanmode').addEventListener('click', toggleCleanMode);
-$('#topbar-fullscreen').addEventListener('click', async () => { try { await window.nativeAPI.toggleFullscreen(); } catch (err) { /* ignore */ } });
+async function toggleFullscreenMode() {
+  try {
+    const isFull = await window.nativeAPI.toggleFullscreen();
+    document.body.classList.toggle('is-fullscreen', !!isFull);
+  } catch (err) { /* ignore */ }
+}
+$('#topbar-fullscreen').addEventListener('click', toggleFullscreenMode);
 $('#topbar-settings').addEventListener('click', () => openSettingsModal());
 $('#topbar-help').addEventListener('click', () => openShortcutsModal());
 
@@ -1750,7 +1756,7 @@ function runAction(id) {
     case 'cleanMode': toggleCleanMode(); break;
     case 'presentationMode': togglePresentationMode(); break;
     case 'ecoMode': toggleEcoMode(); break;
-    case 'fullscreen': window.nativeAPI.toggleFullscreen(); break;
+    case 'fullscreen': toggleFullscreenMode(); break;
     case 'fillCredentials': if (activeAccountId != null) autofillAccount(activeAccountId, true); break;
     case 'settings': openSettingsModal(); break;
     case 'help': openShortcutsModal(); break;
@@ -2248,18 +2254,23 @@ async function refreshZenyRates() {
   const allOpen = state.workspaces.flatMap((w) => w.accounts.filter((a) => a.status === 'open'));
   let total = 0, found = 0;
   for (const acc of allOpen) {
-    const webview = grid.querySelector(`.account-card[data-id="${acc.id}"] webview`);
-    if (!webview) continue;
-    try {
-      const val = await webview.executeJavaScript(EXTRACT_ZENY_INJECT);
-      if (typeof val === 'number' && !isNaN(val)) {
-        acc.zenyRate = val;
-        total += val;
-        found++;
+    const card = grid.querySelector(`.account-card[data-id="${acc.id}"]`);
+    const isVisible = !!card && card.style.display !== 'none';
+    // Conta oculta (outro workspace, ou coberta no layout "Painel único"):
+    // não gasta executeJavaScript nela — mesmo princípio do throttle de rAF.
+    // Usa o último valor já lido pra continuar contando na soma total.
+    if (isVisible) {
+      const webview = card.querySelector('webview');
+      if (webview) {
+        try {
+          const val = await webview.executeJavaScript(EXTRACT_ZENY_INJECT);
+          if (typeof val === 'number' && !isNaN(val)) acc.zenyRate = val;
+        } catch (err) {
+          // conta pode estar numa tela sem esse elemento (login, splash, etc) — ignora nesse ciclo
+        }
       }
-    } catch (err) {
-      // conta pode estar numa tela sem esse elemento (login, splash, etc) — ignora nesse ciclo
     }
+    if (typeof acc.zenyRate === 'number') { total += acc.zenyRate; found++; }
   }
   const el = ensureZenyStatusEl();
   if (el) el.textContent = found > 0 ? `${formatZeny(total)} Zeny/h (${found} conta${found > 1 ? 's' : ''})` : '';
@@ -2728,36 +2739,6 @@ function renderQuickAccounts() {
   });
 }
 // ---------------------------------------------------------------------------
-// Monitoramento periódico de status das contas ativas (HP, SP, Nome, Classe)
-//---------------------------------------------------------------------------
-
-function iniciarMonitoramentoStatus() {
-  setInterval(() => {
-    const webviews = document.querySelectorAll('webview'); 
-    webviews.forEach((webview, index) => {
-      if (webview && typeof webview.executeJavaScript === 'function') {
-        webview.executeJavaScript(`
-          (() => {
-            const name = document.querySelector('.font-ro.text-base.font-bold')?.innerText || 'Conta Ociosa';
-            const job = document.querySelector('.font-ro.text-sm.font-bold.text-ro-stat-label-text\\/60')?.innerText || '';
-            const hpText = document.querySelector('[aria-label="HP"] .ro-vital-gauge-text')?.innerText || '0 / 0';
-            const spText = document.querySelector('[aria-label="SP"] .ro-vital-gauge-text')?.innerText || '0 / 0';
-            return { name, job, hpText, spText };
-          })()
-        `).then(data => {
-          const numeroConta = index + 1;
-          const cardSidebar = document.getElementById(`conta-sidebar-${numeroConta}`);
-          if (cardSidebar) {
-            cardSidebar.querySelector('.hp-label').innerText = data.hpText;
-            cardSidebar.querySelector('.name-label').innerText = data.name;
-          }
-        }).catch(err => {});
-      }
-    });
-  }, 3000);
-}
-
-// ---------------------------------------------------------------------------
 // Start
 // ---------------------------------------------------------------------------
 window.addEventListener('resize', () => {
@@ -2768,4 +2749,3 @@ window.addEventListener('resize', () => {
   }
 });
 init();
-iniciarMonitoramentoStatus();
