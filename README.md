@@ -32,7 +32,17 @@
   <table border="0" cellpadding="10">
     <tr>
       <td colspan="2" align="center">
-        <img src="docs/modo-simples.png" width="880" alt="Modo Simples: painel com os números das quatro contas">
+        <img src="docs/janela-principal.png" width="880" alt="Modo Simples: painel com os números das seis contas">
+      </td>
+    </tr>
+        <tr>
+      <td colspan="2" align="center">
+        <img src="docs/grid-customizado.png" width="880" alt="Grid personalizado: Deixe as telas no formato que desejar">
+      </td>
+    </tr>
+            <tr>
+      <td colspan="2" align="center">
+        <img src="docs/opcoes-grid.png" width="880" alt="Grid personalizado: Deixe as telas no formato que desejar">
       </td>
     </tr>
     <tr>
@@ -67,10 +77,11 @@ Ideal para quem gerencia múltiplos perfis em jogos, redes sociais, e‑commerce
 | :---: | :--- | :--- |
 | 📂 | **Workspaces** | Organize suas contas em categorias visuais com ícones, cores e layouts personalizados. Crie, duplique, renomeie e reordene via drag‑and‑drop. |
 | 👤 | **Contas Isoladas** | Cada conta roda em uma partição separada do Electron. Cookies, cache, localStorage e sessões são totalmente independentes. |
-| 🧩 | **Layouts Flexíveis** | Escolha entre grade automática, painel único, colunas, linhas ou livre para organizar os painéis de cada workspace. |
+| 🧩 | **Layouts Flexíveis** | Escolha entre grade automática, painel único, colunas, linhas, livre ou **grade personalizada** (defina linhas × colunas do seu jeito — inclusive formatos verticais como 1×3, 1×4 ou 2×4) para organizar os painéis de cada workspace. |
 | 🔄 | **Recarregamento em Segundo Plano** | Troque entre workspaces sem perder o estado das contas — tudo permanece em memória e continua rodando em background. |
 | 🔒 | **AutoPreenchimento de Conta** | Login/senha por conta. Preenche sozinho ao carregar o site (com cada site você pode desligar) ou manualmente com Ctrl+Shift+F. |
-| 🔇 | **Controle de Áudio** | Silencie painéis individuais ou todos de uma vez. Ideal para evitar sons indesejados de várias sessões abertas. |
+| 🔇 | **Mudo Global + Individual** | Um botão na barra superior silencia **todas as contas abertas, de todos os workspaces**, de uma vez. Cada conta também mantém seu próprio botão de mudo individual, que continua valendo assim que o mudo global é desligado. |
+| 💰 | **Zeny/h na Barra de Status** | Soma em tempo real o "Saldo potencial/h" de todas as contas abertas e mostra o total na barra de status — sem precisar abrir a telemetria em cada uma. |
 | 📊 | **Métricas em Tempo Real** | Acompanhe CPU, RAM e FPS de cada conta e do processo principal na barra de status. |
 | 🔍 | **Barra de URL Universal** | Digite uma URL e ela será aberta em todas as contas abertas do workspace atual com um clique. |
 | 💾 | **Persistência Local** | Tudo é salvo automaticamente em `state.json`. Ao reabrir, o aplicativo restaura exatamente onde você parou. |
@@ -132,6 +143,14 @@ Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos a
   - **Otimização de Background e Modo Eco:** Gerenciamento inteligente de ciclos de atualização visual (requestAnimationFrame), reduzindo o consumo de CPU em contas ocultas ou em segundo plano sem impactar o progresso idle.
   - **Atalhos Oficiais Integrados:** Acesso rápido por botão na interface para a Wiki, página de Rankings e servidor do Discord do Midgard Idle.
   - **Isolamento de Sessão:** Manutenção das partições independentes (persist:conta-id) para garantir cookies, caches e logins totalmente separados por conta.
+
+- **v1.5.0 (Midgard Edition)** — Grade Personalizada, Mudo Global e Ajustes:
+  - **Grade Personalizada:** Novo modo de layout que permite escolher livremente quantas linhas e colunas cada workspace usa (com atalhos prontos para 1×3, 1×4 e 2×4), além dos formatos quadrados já existentes.
+  - **Mudo Global:** O botão de volume da barra superior agora silencia todas as contas abertas de uma vez, em qualquer workspace — o mudo individual de cada conta continua funcionando por baixo.
+  - **Zeny/h na Barra de Status:** Soma automática do "Saldo potencial/h" de todas as contas abertas, exibida em tempo real.
+  - **Modo Tela Limpa com Trava:** O botão de tela limpa virou multifunção — um clique esconde a interface (revelando ao encostar o mouse na borda, como antes), um segundo clique trava o painel lateral pra ele não aparecer mais nem passando o mouse.
+  - **Correção da Tela Cheia (F11):** O botão/atalho de tela cheia voltou a esconder a barra de título corretamente.
+  - **Otimização de Performance:** Removida rotina de monitoramento que rodava sem necessidade em todas as contas abertas; consultas de Zeny/h agora só rodam nas contas visíveis na tela, reduzindo o consumo em setups com várias contas abertas ao mesmo tempo.
 
 ## Licença
 
