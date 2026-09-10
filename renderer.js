@@ -7,7 +7,7 @@
 // se um dia você trocar de Gist. Formato esperado do arquivo .json dentro
 // dele: { "version": "1.3.0", "url": "https://...", "message": "..." }
 // ============================================================
-const UPDATE_GIST_URL = 'https://gist.github.com/Diinhow/b9261f1077c60b5dbcd4dccba8eb67e8';
+const UPDATE_GIST_URL = 'https://gist.github.com/Jaffrito/f623667cd54a8e5473cf7bebfec0bcae';
 
 // ============================================================
 // Tema padrão para quem abre o app pela primeira vez.
@@ -341,8 +341,10 @@ function defaultSettings() {
     downloadsPath: null, perguntarOndeSalvar: true, modoTelaLimpa: false, encostarBordas: true,
     modoApresentacao: false,
     modoEco: false,
+    mudoGlobal: false,
   };
 }
+function effectiveMuted(acc) { return !!state.settings.mudoGlobal || !!(acc && acc.muted); }
 
 // ---------------------------------------------------------------------------
 // Utilidades
@@ -502,14 +504,41 @@ $('#expand-sidebar-btn').addEventListener('click', () => { state.sidebarCollapse
 
 // ---------------------------------------------------------------------------
 // Modo tela limpa (+ revelar interface ao encostar nas bordas)
+// Botão multifunção: 1º clique liga tela limpa (revela ao encostar, como
+// sempre foi); 2º clique TRAVA o painel (para de revelar mesmo passando o
+// mouse); 3º clique desliga tudo e volta ao normal.
 // ---------------------------------------------------------------------------
+let cleanModeDefaultIcon = null;
 function applyCleanMode() {
   document.body.classList.toggle('clean-mode', !!state.settings.modoTelaLimpa);
   document.body.classList.toggle('edge-reveal', !!state.settings.encostarBordas);
-  $('#topbar-cleanmode') && $('#topbar-cleanmode').classList.toggle('active-state', !!state.settings.modoTelaLimpa);
+  const btn = $('#topbar-cleanmode');
+  if (btn) {
+    if (cleanModeDefaultIcon === null) cleanModeDefaultIcon = btn.innerHTML; // guarda o ícone original na 1ª vez
+    const locked = !!state.settings.modoTelaLimpa && !state.settings.encostarBordas;
+    btn.innerHTML = locked
+      ? '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
+      : cleanModeDefaultIcon;
+    btn.classList.toggle('active-state', !!state.settings.modoTelaLimpa);
+    btn.dataset.tooltip = locked
+      ? 'Painel travado (clique para voltar ao normal)'
+      : (state.settings.modoTelaLimpa ? 'Tela limpa ativa (clique para travar o painel)' : 'Modo tela limpa (Ctrl+Shift+Z)');
+  }
 }
 function toggleCleanMode() {
-  state.settings.modoTelaLimpa = !state.settings.modoTelaLimpa;
+  if (!state.settings.modoTelaLimpa) {
+    // Estado 1: liga tela limpa, com revelar ao encostar (comportamento de sempre)
+    state.settings.modoTelaLimpa = true;
+    state.settings.encostarBordas = true;
+  } else if (state.settings.encostarBordas) {
+    // Estado 2: já em tela limpa — trava o painel (não revela mais ao encostar)
+    state.settings.encostarBordas = false;
+  } else {
+    // Estado 3: já travado — desliga tudo e reseta pro padrão (revelar volta
+    // a ficar ligado pra próxima vez que ativar tela limpa de novo)
+    state.settings.modoTelaLimpa = false;
+    state.settings.encostarBordas = true;
+  }
   applyCleanMode();
   schedulePersist();
 }
@@ -714,12 +743,59 @@ wsCtxMenu.addEventListener('click', (e) => {
 // ---------------------------------------------------------------------------
 const wsEditOverlay = $('#ws-edit-overlay');
 let wsEditColor = null, wsEditIcon = null;
+
+// Adiciona a opção "Grade personalizada" no <select> de layout (uma vez só)
+// e os campos de linhas/colunas, sem precisar editar o index.html.
+function ensureCustomGridOption() {
+  const select = $('#ws-edit-layout');
+  if (!select || select.querySelector('option[value="custom"]')) return;
+  const opt = document.createElement('option');
+  opt.value = 'custom';
+  opt.textContent = 'Grade personalizada (linhas × colunas)';
+  select.appendChild(opt);
+}
+function ensureCustomGridControls() {
+  let wrap = $('#ws-edit-custom-grid');
+  if (wrap) return wrap;
+  const anchor = $('#ws-edit-reset-dividers');
+  if (!anchor || !anchor.parentElement) return null;
+  wrap = document.createElement('div');
+  wrap.id = 'ws-edit-custom-grid';
+  wrap.className = 'hidden';
+  wrap.style.cssText = 'align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap;';
+  const inputStyle = 'width:52px; background:#0f1218; color:#e5e7eb; border:1px solid #2a2f3a; border-radius:6px; padding:4px 6px; font-size:13px;';
+  wrap.innerHTML = `
+    <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:#e5e7eb;">Linhas
+      <input id="ws-edit-custom-rows" type="number" min="1" max="8" value="2" style="${inputStyle}">
+    </label>
+    <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:#e5e7eb;">Colunas
+      <input id="ws-edit-custom-cols" type="number" min="1" max="8" value="2" style="${inputStyle}">
+    </label>
+    <span style="display:flex; gap:6px;">
+      <button type="button" data-rows="1" data-cols="3" class="btn-icon" style="width:auto; padding:0 8px; font-size:11px;">1×3</button>
+      <button type="button" data-rows="1" data-cols="4" class="btn-icon" style="width:auto; padding:0 8px; font-size:11px;">1×4</button>
+      <button type="button" data-rows="2" data-cols="4" class="btn-icon" style="width:auto; padding:0 8px; font-size:11px;">2×4</button>
+    </span>
+  `;
+  anchor.parentElement.insertBefore(wrap, anchor.nextSibling);
+  wrap.querySelectorAll('button[data-rows]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      $('#ws-edit-custom-rows').value = btn.dataset.rows;
+      $('#ws-edit-custom-cols').value = btn.dataset.cols;
+    });
+  });
+  return wrap;
+}
 function openWorkspaceEditModal() {
   const ws = getActiveWorkspace();
   if (!ws) return;
+  ensureCustomGridOption();
+  ensureCustomGridControls();
   $('#ws-edit-name').value = ws.name;
   $('#ws-edit-url').value = ws.defaultUrl || '';
   $('#ws-edit-layout').value = ws.layout || 'auto';
+  $('#ws-edit-custom-rows').value = ws.customRows || 2;
+  $('#ws-edit-custom-cols').value = ws.customCols || 2;
   wsEditColor = ws.color; wsEditIcon = ws.iconKey;
   renderWsEditColors(); renderWsEditIcons();
   updateResetDividersVisibility();
@@ -727,7 +803,10 @@ function openWorkspaceEditModal() {
   $('#ws-edit-name').focus();
 }
 function updateResetDividersVisibility() {
-  $('#ws-edit-reset-dividers').classList.toggle('hidden', $('#ws-edit-layout').value !== 'auto');
+  const layout = $('#ws-edit-layout').value;
+  $('#ws-edit-reset-dividers').classList.toggle('hidden', layout !== 'auto');
+  const customWrap = $('#ws-edit-custom-grid');
+  if (customWrap) customWrap.style.display = layout === 'custom' ? 'flex' : 'none';
 }
 $('#ws-edit-layout').addEventListener('change', updateResetDividersVisibility);
 $('#ws-edit-reset-dividers').addEventListener('click', () => {
@@ -771,6 +850,10 @@ $('#ws-edit-save').addEventListener('click', () => {
   ws.iconKey = wsEditIcon || ws.iconKey;
   ws.defaultUrl = url ? normalizeUrl(url) : ws.defaultUrl;
   ws.layout = $('#ws-edit-layout').value;
+  if (ws.layout === 'custom') {
+    ws.customRows = Math.max(1, Math.min(8, parseInt($('#ws-edit-custom-rows').value, 10) || 2));
+    ws.customCols = Math.max(1, Math.min(8, parseInt($('#ws-edit-custom-cols').value, 10) || 2));
+  }
   wsEditOverlay.classList.add('hidden');
   renderWorkspaceRail(); renderSidebar(); renderGrid(); updateStatusBar(); schedulePersist();
 });
@@ -1203,6 +1286,11 @@ function renderGrid() {
     grid.style.gridTemplateRows = `repeat(${Math.max(visibleAccounts.length, 1)}, 1fr)`;
   } else if (layout === 'single' || layout === 'free') {
     grid.style.gridTemplateColumns = ''; grid.style.gridTemplateRows = '';
+  } else if (layout === 'custom') {
+    const cols = Math.max(1, Math.min(8, (ws && ws.customCols) || 2));
+    const rows = Math.max(1, Math.min(8, (ws && ws.customRows) || 2));
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
   } else {
     const { cols, rows } = computeAutoGrid(visibleAccounts.length);
     if (ws) {
@@ -1326,7 +1414,7 @@ function buildCard(acc) {
 
   webview.addEventListener('dom-ready', () => {
     acc.webContentsId = webview.getWebContentsId();
-    if (acc.muted) webview.setAudioMuted(true);
+    if (effectiveMuted(acc)) webview.setAudioMuted(true);
     webview.setZoomFactor(acc.zoomFactor || 1);
     if (acc.id === activeAccountId) { updateNavButtons(); updateZoomLabel(); }
     rafThrottleState.delete(acc.id); // página recarregou — a patch some, precisa injetar de novo
@@ -1369,7 +1457,7 @@ function buildCard(acc) {
   header.querySelector('.mute').addEventListener('click', (ev) => {
     ev.stopPropagation();
     acc.muted = !acc.muted;
-    webview.setAudioMuted(acc.muted);
+    webview.setAudioMuted(effectiveMuted(acc));
     header.querySelector('.mute').innerHTML = muteIcon(acc.muted);
     if (acc.id === activeAccountId) updateMuteButton();
     schedulePersist();
@@ -1460,7 +1548,7 @@ ctxMenu.addEventListener('click', (e) => {
       acc.muted = !acc.muted;
       const card = grid.querySelector(`.account-card[data-id="${id}"]`);
       const webview = card && card.querySelector('webview');
-      if (webview) webview.setAudioMuted(acc.muted);
+      if (webview) webview.setAudioMuted(effectiveMuted(acc));
       const cardMuteBtn = card && card.querySelector('.mute');
       if (cardMuteBtn) cardMuteBtn.innerHTML = muteIcon(acc.muted);
       if (id === activeAccountId) updateMuteButton();
@@ -1519,20 +1607,19 @@ addressBar.addEventListener('keydown', (e) => { if (e.key === 'Enter') navigateA
 // Toolbar: mudo / zoom / downloads / modo tela limpa / tela cheia / config / ajuda
 // ---------------------------------------------------------------------------
 function updateMuteButton() {
-  const acc = getActiveAccount();
+  const muted = !!state.settings.mudoGlobal;
   const btn = $('#topbar-mute');
-  btn.innerHTML = muteIcon(acc ? acc.muted : false);
-  btn.classList.toggle('active-state', !!(acc && acc.muted));
+  btn.innerHTML = muteIcon(muted);
+  btn.classList.toggle('active-state', muted);
 }
 $('#topbar-mute').addEventListener('click', () => {
-  const acc = getActiveAccount();
-  if (!acc) return;
-  acc.muted = !acc.muted;
-  const webview = getActiveWebview();
-  if (webview) webview.setAudioMuted(acc.muted);
-  const card = getActiveCard();
-  const cardMuteBtn = card && card.querySelector('.mute');
-  if (cardMuteBtn) cardMuteBtn.innerHTML = muteIcon(acc.muted);
+  state.settings.mudoGlobal = !state.settings.mudoGlobal;
+  const allOpen = state.workspaces.flatMap((w) => w.accounts.filter((a) => a.status === 'open'));
+  allOpen.forEach((acc) => {
+    const card = grid.querySelector(`.account-card[data-id="${acc.id}"]`);
+    const webview = card && card.querySelector('webview');
+    if (webview) webview.setAudioMuted(effectiveMuted(acc));
+  });
   updateMuteButton();
   schedulePersist();
 });
@@ -1742,7 +1829,7 @@ function runAction(id) {
       open.forEach((acc) => {
         acc.muted = anyUnmuted;
         const w = grid.querySelector(`.account-card[data-id="${acc.id}"] webview`);
-        if (w) w.setAudioMuted(anyUnmuted);
+        if (w) w.setAudioMuted(effectiveMuted(acc));
         const btn = grid.querySelector(`.account-card[data-id="${acc.id}"] .mute`);
         if (btn) btn.innerHTML = muteIcon(anyUnmuted);
       });
@@ -2181,6 +2268,7 @@ donateOverlay.addEventListener('click', (e) => { if (e.target === donateOverlay)
 // ---------------------------------------------------------------------------
 function layoutLabel(layout) {
   const map = { auto: 'layoutAuto', single: 'layoutSingle', columns: 'layoutColumns', rows: 'layoutRows', free: 'layoutFree' };
+  if (layout === 'custom') return 'Grade personalizada';
   return t(map[layout] || 'layoutAuto');
 }
 function updateStatusBar() {

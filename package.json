@@ -1,6 +1,6 @@
 {
-  "name": "idle-hub",
-  "version": "1.2.5",
+  "name": "Midgard idle-hub",
+  "version": "1.5.0",
   "description": "Idle Hub — gerenciador de múltiplas contas/sessões de navegador em workspaces, feito em Electron",
   "main": "main.js",
   "author": "Dinho",
