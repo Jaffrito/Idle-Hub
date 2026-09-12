@@ -1185,15 +1185,24 @@ async function toggleNetworkRecording(accountId) {
         alert('Não foi possível iniciar a gravação de rede: ' + ((result && result.error) || 'erro desconhecido'));
         return;
       }
-      // Pedido do Poring: reinicia a timeline de diagnóstico dele junto com
-      // o início da gravação (se a página não tiver esse objeto, ignora
-      // silenciosamente — não pode travar a gravação de rede por causa disso).
+      // Pedido do Poring: reset() + start() nos DOIS objetos de diagnóstico
+      // dele (presentation e socket), nessa ordem — reset de ambos primeiro,
+      // start de ambos depois. Se a página ainda não tiver esses objetos
+      // (só chega no update de amanhã dele), ignora silenciosamente — não
+      // pode travar a gravação de rede por causa disso.
       if (card) {
         const webview = card.querySelector('webview');
         if (webview) {
-          webview.executeJavaScript(
-            'window.__roidlePresentationTimelineDiagnostics && window.__roidlePresentationTimelineDiagnostics.reset && window.__roidlePresentationTimelineDiagnostics.reset();'
-          ).catch((err) => console.error('Erro ao resetar timeline de diagnóstico:', err));
+          webview.executeJavaScript(`(function(){
+            try {
+              var presentation = window.__midgardIdlePresentationTimelineDiagnostics;
+              var socket = window.__midgardIdleGameSocketDiagnostics;
+              if (presentation && presentation.reset) presentation.reset();
+              if (socket && socket.reset) socket.reset();
+              if (presentation && presentation.start) presentation.start();
+              if (socket && socket.start) socket.start();
+            } catch (e) {}
+          })();`).catch((err) => console.error('Erro ao iniciar diagnóstico do Poring:', err));
         }
       }
       acc.recordingNetwork = true;
@@ -1215,19 +1224,33 @@ async function toggleNetworkRecording(accountId) {
     const hhmmss = `${pad2(agora.getHours())}${pad2(agora.getMinutes())}${pad2(agora.getSeconds())}`;
     const ddmmyy = `${pad2(agora.getDate())}${pad2(agora.getMonth() + 1)}${String(agora.getFullYear()).slice(-2)}`;
     const harName = `${nomePersonagem}-rede-${hhmmss}-${ddmmyy}.har`;
-    // Pedido do Poring: tira o snapshot da timeline de diagnóstico dele antes
-    // de encerrar, e manda junto pro bundle (se a página não tiver esse
-    // objeto, manda null — o main.js só salva o arquivo extra se tiver algo).
+    // Pedido do Poring: stop() nos DOIS objetos primeiro, depois monta o
+    // "capture" com presentation.snapshot(), presentation.receipts() e
+    // socket.snapshot() — exatamente a estrutura que ele passou. Se a
+    // página ainda não tiver os objetos, manda null (main.js só salva o
+    // arquivo extra se tiver algo).
     let diagnosticsSnapshot = null;
     if (card) {
       const webview = card.querySelector('webview');
       if (webview) {
         try {
-          diagnosticsSnapshot = await webview.executeJavaScript(
-            '(window.__roidlePresentationTimelineDiagnostics && window.__roidlePresentationTimelineDiagnostics.snapshot) ? window.__roidlePresentationTimelineDiagnostics.snapshot() : null'
-          );
+          diagnosticsSnapshot = await webview.executeJavaScript(`(function(){
+            try {
+              var presentation = window.__midgardIdlePresentationTimelineDiagnostics;
+              var socket = window.__midgardIdleGameSocketDiagnostics;
+              if (presentation && presentation.stop) presentation.stop();
+              if (socket && socket.stop) socket.stop();
+              var capture = {
+                presentation: (presentation && presentation.snapshot) ? presentation.snapshot() : null,
+                receipts: (presentation && presentation.receipts) ? presentation.receipts() : null,
+                socket: (socket && socket.snapshot) ? socket.snapshot() : null,
+              };
+              if (capture.presentation == null && capture.receipts == null && capture.socket == null) return null;
+              return capture;
+            } catch (e) { return null; }
+          })();`);
         } catch (err) {
-          console.error('Erro ao tirar snapshot da timeline de diagnóstico:', err);
+          console.error('Erro ao encerrar/coletar diagnóstico do Poring:', err);
         }
       }
     }

@@ -82,6 +82,7 @@ Ideal para quem gerencia múltiplos perfis em jogos, redes sociais, e‑commerce
 | 🔒 | **AutoPreenchimento de Conta** | Login/senha por conta. Preenche sozinho ao carregar o site (com cada site você pode desligar) ou manualmente com Ctrl+Shift+F. |
 | 🔇 | **Mudo Global + Individual** | Um botão na barra superior silencia **todas as contas abertas, de todos os workspaces**, de uma vez. Cada conta também mantém seu próprio botão de mudo individual, que continua valendo assim que o mudo global é desligado. |
 | 💰 | **Zeny/h na Barra de Status** | Soma em tempo real o "Saldo potencial/h" de todas as contas abertas e mostra o total na barra de status — sem precisar abrir a telemetria em cada uma. |
+| 🎫 | **Kit de Diagnóstico (Tickets)** | Ferramentas de diagnóstico direto em cada conta, pra agilizar a abertura de tickets de suporte com a equipe do jogo. |
 | 📊 | **Métricas em Tempo Real** | Acompanhe CPU, RAM e FPS de cada conta e do processo principal na barra de status. |
 | 🔍 | **Barra de URL Universal** | Digite uma URL e ela será aberta em todas as contas abertas do workspace atual com um clique. |
 | 💾 | **Persistência Local** | Tudo é salvo automaticamente em `state.json`. Ao reabrir, o aplicativo restaura exatamente onde você parou. |
@@ -151,6 +152,9 @@ Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos a
   - **Modo Tela Limpa com Trava:** O botão de tela limpa virou multifunção — um clique esconde a interface (revelando ao encostar o mouse na borda, como antes), um segundo clique trava o painel lateral pra ele não aparecer mais nem passando o mouse.
   - **Correção da Tela Cheia (F11):** O botão/atalho de tela cheia voltou a esconder a barra de título corretamente.
   - **Otimização de Performance:** Removida rotina de monitoramento que rodava sem necessidade em todas as contas abertas; consultas de Zeny/h agora só rodam nas contas visíveis na tela, reduzindo o consumo em setups com várias contas abertas ao mesmo tempo.
+
+- **v1.6.0 (Midgard Edition)** — Kit de Diagnóstico:
+  - **Ferramentas de Diagnóstico (Kit-Ticket):** Novas ferramentas para gerar relatórios completos direto de cada conta, agilizando a abertura de tickets de suporte de forma mais eficiente.
 
 ## Licença
 

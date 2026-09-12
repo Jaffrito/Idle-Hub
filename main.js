@@ -491,7 +491,8 @@ ipcMain.handle('network-record-stop', async (event, data) => {
     const harPath = path.join(folder, harName || `network-${Date.now()}.har`);
     fs.writeFileSync(harPath, JSON.stringify(har, null, 2), 'utf-8');
 
-    // Snapshot da timeline de diagnóstico do Poring (window.__roidlePresentationTimelineDiagnostics)
+    // Diagnóstico do Poring: window.__midgardIdlePresentationTimelineDiagnostics
+    // + window.__midgardIdleGameSocketDiagnostics (capture = {presentation, receipts, socket})
     // — salvo como arquivo irmão do .har, mesmo nome base, sufixo -diagnostics.json.
     let diagnosticsPath = null;
     const diagnosticsSnapshot = data && data.diagnosticsSnapshot;
