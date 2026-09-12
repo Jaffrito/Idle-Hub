@@ -1,3 +1,4 @@
+
 // ---------------------------------------------------------------------------
 // i18n — traduções reais (pt/en/es), aplicadas sem precisar recarregar
 // ---------------------------------------------------------------------------
@@ -8,7 +9,6 @@
 // dele: { "version": "1.3.0", "url": "https://...", "message": "..." }
 // ============================================================
 const UPDATE_GIST_URL = 'https://gist.github.com/Jaffrito/f623667cd54a8e5473cf7bebfec0bcae';
-
 // ============================================================
 // Tema padrão para quem abre o app pela primeira vez.
 // Troque para 'neon' se quiser que o tema Neon já venha ativado de cara
@@ -17,7 +17,6 @@ const UPDATE_GIST_URL = 'https://gist.github.com/Jaffrito/f623667cd54a8e5473cf7b
 // Valores válidos: 'escuro' | 'neon'
 // ============================================================
 const DEFAULT_THEME = 'escuro';
-
 const I18N = {
   pt: {
     addAccount: 'Adicionar conta', emptyTitle: 'Nenhuma conta aberta',
@@ -262,7 +261,6 @@ function applyLanguage(langSetting) {
 function applyTheme(tema) {
   document.body.classList.toggle('theme-neon', tema === 'neon');
 }
-
 // ---------------------------------------------------------------------------
 // Ícones: baseados na biblioteca Lucide (https://lucide.dev, licença ISC — open source de verdade)
 // ---------------------------------------------------------------------------
@@ -288,13 +286,17 @@ const ICONS_MINI = {
   openWindow: '<svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
   soundOn: '<svg viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>',
   soundOff: '<svg viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>',
+  // Ícone de envelope — botão do Kit-Ticket
+  report: '<svg viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  // Ícone de círculo (ponto de gravação) — botão de captura de rede (HAR)
+  record: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>',
+  // Ícone de quadrado — mesmo botão, mas enquanto a gravação está em andamento
+  recordStop: '<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>',
 };
 function muteIcon(muted) { return muted ? ICONS_MINI.soundOff : ICONS_MINI.soundOn; }
-
 const COLORS = ['#e3b341', '#38bdf8', '#34d399', '#f87171', '#a78bfa', '#fb923c', '#f472b6', '#22d3ee'];
 const ACCOUNT_COLORS = COLORS;
 const DEFAULT_URL = 'https://midgardidle.ro/';
-
 // ---------------------------------------------------------------------------
 // Estado global
 // ---------------------------------------------------------------------------
@@ -304,7 +306,6 @@ let state = {
 };
 let activeAccountId = null;
 let saveTimer = null;
-
 // ---------------------------------------------------------------------------
 // Modo "janela avulsa" (aberta via "Abrir em nova janela"): o index.html é
 // recarregado numa segunda BrowserWindow com ?standalone=1&account=<json>.
@@ -327,13 +328,11 @@ function parseStandaloneAccountFromQuery() {
   }
 }
 const STANDALONE_ACCOUNT = parseStandaloneAccountFromQuery();
-
 const $ = (sel) => document.querySelector(sel);
 const workspaceIconsEl = $('#workspace-icons');
 const accountListEl = $('#account-list');
 const grid = $('#grid');
 const addressBar = $('#address-bar');
-
 function defaultSettings() {
   return {
     idioma: 'sistema', tema: DEFAULT_THEME, iniciarComSistema: false, reabrirUltimoWorkspace: true,
@@ -345,7 +344,6 @@ function defaultSettings() {
   };
 }
 function effectiveMuted(acc) { return !!state.settings.mudoGlobal || !!(acc && acc.muted); }
-
 // ---------------------------------------------------------------------------
 // Utilidades
 // ---------------------------------------------------------------------------
@@ -400,7 +398,6 @@ async function persistState() {
   isDirty = false;
   try { await window.nativeAPI.saveState(serializeState()); } catch (err) { console.error('Erro ao salvar estado', err); }
 }
-
 // ---------------------------------------------------------------------------
 // Inicialização
 // ---------------------------------------------------------------------------
@@ -409,7 +406,6 @@ async function init() {
   if (!STANDALONE_ACCOUNT) {
     try { loaded = await window.nativeAPI.loadState(); } catch (err) { console.error('Erro ao carregar estado salvo', err); }
   }
-
   if (STANDALONE_ACCOUNT) {
     // Novo grid independente com só essa conta (mesma partition/sessão dela).
     state.settings = defaultSettings();
@@ -456,10 +452,8 @@ async function init() {
       createdAt: Date.now(), webContentsId: null, pid: null,
     });
   }
-
   if (!state.activeWorkspaceId) state.activeWorkspaceId = state.workspaces[0].id;
   if (state.sidebarCollapsed) applySidebarCollapsed(true);
-
   applyLanguage(state.settings.idioma);
   applyTheme(state.settings.tema);
   applyCleanMode();
@@ -473,15 +467,12 @@ async function init() {
   updateNavButtons();
   updateZoomLabel();
   updateMuteButton();
-
   try { state.settings.iniciarComSistema = !!(await window.nativeAPI.getLoginItem()); } catch (err) { /* ignore */ }
-
   // As credenciais salvas continuam valendo (mesmo id/mesma conta real), mas
   // não faz sentido checar atualização a cada janela avulsa aberta.
   await loadCredentials();
   if (!STANDALONE_ACCOUNT) checkForUpdatesOnStartup();
 }
-
 // ---------------------------------------------------------------------------
 // Janela avulsa: esconde o que não se aplica a um grid de conta única — a
 // coluna de workspaces (não há múltiplos workspaces aqui) e o botão de doar.
@@ -491,7 +482,6 @@ function hideStandaloneChrome() {
   const donateBtn = $('#donate-btn'); if (donateBtn) donateBtn.style.display = 'none';
   const renameWsBtn = $('#rename-workspace-btn'); if (renameWsBtn) renameWsBtn.style.display = 'none';
 }
-
 // ---------------------------------------------------------------------------
 // Sidebar recolher/expandir
 // ---------------------------------------------------------------------------
@@ -501,7 +491,6 @@ function applySidebarCollapsed(collapsed) {
 }
 $('#collapse-sidebar-btn').addEventListener('click', () => { state.sidebarCollapsed = true; applySidebarCollapsed(true); schedulePersist(); });
 $('#expand-sidebar-btn').addEventListener('click', () => { state.sidebarCollapsed = false; applySidebarCollapsed(false); schedulePersist(); });
-
 // ---------------------------------------------------------------------------
 // Modo tela limpa (+ revelar interface ao encostar nas bordas)
 // Botão multifunção: 1º clique liga tela limpa (revela ao encostar, como
@@ -542,7 +531,6 @@ function toggleCleanMode() {
   applyCleanMode();
   schedulePersist();
 }
-
 // ---------------------------------------------------------------------------
 // Modo apresentação/gravação: borra nomes/URLs sensíveis nos cabeçalhos
 // (cards, sidebar, barra de endereço). Passar o mouse revela na hora.
@@ -557,7 +545,6 @@ function togglePresentationMode() {
   applyPresentationMode();
   schedulePersist();
 }
-
 // ---------------------------------------------------------------------------
 // Modo Eco: reduz o uso de CPU da conta em foco também (não só das que já
 // estão em segundo plano), trocando o requestAnimationFrame por uma versão
@@ -586,7 +573,6 @@ $('#edge-trigger-left').addEventListener('mouseenter', revealLeft);
   el.addEventListener('mouseleave', scheduleHide);
   el.addEventListener('mouseenter', () => clearTimeout(revealTimer));
 });
-
 // ---------------------------------------------------------------------------
 // Modal de confirmação genérico
 // ---------------------------------------------------------------------------
@@ -603,7 +589,6 @@ $('#confirm-ok').addEventListener('click', () => { const cb = confirmCallback; h
 $('#confirm-cancel').addEventListener('click', hideConfirm);
 $('#confirm-close').addEventListener('click', hideConfirm);
 confirmOverlay.addEventListener('click', (e) => { if (e.target === confirmOverlay) hideConfirm(); });
-
 // ---------------------------------------------------------------------------
 // Workspaces
 // ---------------------------------------------------------------------------
@@ -620,7 +605,6 @@ function nextSequentialName(existingNames, prefix) {
   while (used.has(i)) i++;
   return `${prefix} ${i}`;
 }
-
 function createWorkspace() {
   const id = state.nextWorkspaceId++;
   const idx = state.workspaces.length;
@@ -711,7 +695,6 @@ function renderWorkspaceRail() {
     workspaceIconsEl.appendChild(el);
   });
 }
-
 // ---------------------------------------------------------------------------
 // Menu de contexto do workspace
 // ---------------------------------------------------------------------------
@@ -737,13 +720,11 @@ wsCtxMenu.addEventListener('click', (e) => {
   else if (action === 'delete') confirmDeleteWorkspace(id);
   closeWsContextMenu();
 });
-
 // ---------------------------------------------------------------------------
 // Modal "Editar workspace"
 // ---------------------------------------------------------------------------
 const wsEditOverlay = $('#ws-edit-overlay');
 let wsEditColor = null, wsEditIcon = null;
-
 // Adiciona a opção "Grade personalizada" no <select> de layout (uma vez só)
 // e os campos de linhas/colunas, sem precisar editar o index.html.
 function ensureCustomGridOption() {
@@ -857,7 +838,6 @@ $('#ws-edit-save').addEventListener('click', () => {
   wsEditOverlay.classList.add('hidden');
   renderWorkspaceRail(); renderSidebar(); renderGrid(); updateStatusBar(); schedulePersist();
 });
-
 // ---------------------------------------------------------------------------
 // Contas: criação instantânea (sem modal) / abrir / fechar / duplicar / editar / excluir / limpar
 // ---------------------------------------------------------------------------
@@ -899,7 +879,6 @@ function closeAccount(id) {
   renderSidebar(); renderGrid(); updateStatusBar(); updateNavButtons(); updateZoomLabel(); updateMuteButton();
   schedulePersist();
 }
-
 // ---------------------------------------------------------------------------
 // Abrir conta em uma janela própria (fora do grid). Usa a MESMA partition da
 // conta, então login/cookies continuam sincronizados com o painel do grid —
@@ -922,6 +901,352 @@ async function openAccountInWindow(id) {
     });
   } catch (err) {
     console.error('Erro ao abrir conta em nova janela:', err);
+  }
+}
+// ---------------------------------------------------------------------------
+// Kit-Ticket: gera um pacote de suporte (log do console + estado do
+// personagem, tudo extraído da própria conta) para anexar em tickets —
+// ajuda a staff quando o usuário abre um chamado incompleto. Fluxo:
+// 1) confirma com o usuário que ele já deixou as telas certas abertas;
+// 2) lê o nome do personagem e o estado (Informações básicas, Status e
+//    Equipamentos) direto do HTML da página do jogo; 3) salva log + estado;
+// 4) o main.js abre a pasta no final. Sem screenshot — todos os dados
+// relevantes já vêm extraídos diretamente do front-end.
+// ---------------------------------------------------------------------------
+// Mesmo princípio do EXTRACT_ZENY_INJECT: um scriptzinho injetado na página
+// do jogo, que acha o nome do personagem no HUD e devolve o texto pra gente.
+// O jogo tem PELO MENOS duas telas diferentes que mostram o nome (o HUD
+// compacto do mobile e um painel expandido de status), com estruturas de
+// HTML/CSS diferentes entre si — por isso tentamos 2 estratégias em ordem,
+// da mais específica pra mais genérica, parando na primeira que funcionar:
+//
+// 1) HUD compacto (mobile-basic-info): lá SÓ o span do nome tem "font-bold"
+//    (o da classe/job usa "font-normal"), então a classe sozinha já resolve.
+// 2) Painel expandido de status: lá os dois spans (nome E classe/job) usam
+//    "font-bold", então a classe deixa de ser confiável. Em vez disso,
+//    usamos o AVATAR do personagem (data-testid="character-portrait-canvas")
+//    como "ponto de referência" fixo: o bloco de nome/classe fica sempre ao
+//    lado dele, e o nome é sempre o PRIMEIRO <span> desse bloco.
+const EXTRACT_CHAR_NAME_INJECT = `(function(){
+  function limpa(texto) { return (texto || '').trim(); }
+
+  // Estratégia 1: HUD compacto do mobile.
+  var elMobile = document.querySelector('[data-testid="mobile-basic-info"] span.font-bold');
+  if (elMobile) {
+    var nome1 = limpa(elMobile.getAttribute('title') || elMobile.textContent);
+    if (nome1) return nome1;
+  }
+
+  // Estratégia 2: painel expandido — usa o avatar como referência fixa.
+  var canvas = document.querySelector('[data-testid="character-portrait-canvas"]');
+  if (canvas) {
+    var mascara = canvas.parentElement;
+    var quadroAvatar = mascara ? mascara.parentElement : null;
+    var blocoNome = quadroAvatar ? quadroAvatar.nextElementSibling : null;
+    var primeiroSpan = blocoNome ? blocoNome.querySelector('span') : null;
+    if (primeiroSpan) {
+      var nome2 = limpa(primeiroSpan.getAttribute('title') || primeiroSpan.textContent);
+      if (nome2) return nome2;
+    }
+  }
+
+  return null;
+})();`;
+async function extractCharacterName(accountId) {
+  const webview = grid.querySelector(`.account-card[data-id="${accountId}"] webview`);
+  if (!webview) return null;
+  try {
+    return await webview.executeJavaScript(EXTRACT_CHAR_NAME_INJECT);
+  } catch (err) {
+    return null; // HUD pode não estar montado ainda (tela de login, etc.)
+  }
+}
+// Extração do "estado" do personagem: Informações básicas (HP, SP, nível
+// base/job + %exp, peso, zeny, classe), Status/Atributos (STR/AGI/VIT/INT/
+// DEX/LUK, ATK/MATK/HIT/CRI/DEF/MDEF/FLEE/ASPD, pontos restantes) e
+// Equipamentos (os slots equipados). Sugestão do Poring: como o jogo é
+// browser/JS, dá pra ler os valores direto do HTML em vez de depender de
+// screenshot. Usamos atributos de ACESSIBILIDADE (role="progressbar",
+// aria-label, data-testid) como referência — eles servem para leitores de
+// tela, então tendem a ser MUITO estáveis entre atualizações do jogo.
+const EXTRACT_GAME_STATE_INJECT = `(function(){
+  function limpa(t) { return (t || '').trim(); }
+  var linhas = [];
+  var vistos = {};
+  function add(txt) {
+    txt = limpa(txt);
+    if (!txt || vistos[txt]) return;
+    vistos[txt] = true;
+    linhas.push(txt);
+  }
+
+  // ===== Informações básicas =====
+  document.querySelectorAll('[role="progressbar"]').forEach(function (bar) {
+    var label = limpa(bar.getAttribute('aria-label'));
+    if (!label) return;
+    var pct = bar.getAttribute('aria-valuenow');
+    var span = bar.querySelector('span');
+    var valorTexto = span ? limpa(span.textContent) : '';
+    if (label === 'HP' || label === 'SP') {
+      add(label + ': ' + (valorTexto || '?') + (pct != null ? ' (' + pct + '%)' : ''));
+    } else if (/Lv\\..*EXP$/i.test(label)) {
+      add(label.replace(/\\s*EXP$/i, '') + (pct != null ? ' - ' + pct + '% exp' : ''));
+    }
+  });
+  document.querySelectorAll('[title]').forEach(function (el) {
+    var titulo = limpa(el.getAttribute('title'));
+    if (/^(Base Lv\\.|Classe Lv\\.|Peso:|Zeny:)/i.test(titulo)) add(titulo);
+  });
+  var pesoEl = document.querySelector('[aria-label^="Peso:"]');
+  if (pesoEl) add(pesoEl.getAttribute('aria-label'));
+  var zenyEl = document.querySelector('fieldset[aria-label="Zeny"]');
+  if (zenyEl) add(zenyEl.textContent);
+  var elMobileNome = document.querySelector('[data-testid="mobile-basic-info"] span.font-bold');
+  if (elMobileNome && elMobileNome.nextElementSibling) {
+    var classeMobile = limpa(elMobileNome.nextElementSibling.getAttribute('title') || elMobileNome.nextElementSibling.textContent);
+    if (classeMobile) add('Classe: ' + classeMobile);
+  } else {
+    var canvasClasse = document.querySelector('[data-testid="character-portrait-canvas"]');
+    if (canvasClasse) {
+      var blocoNomeClasse = canvasClasse.parentElement && canvasClasse.parentElement.parentElement
+        ? canvasClasse.parentElement.parentElement.nextElementSibling : null;
+      var spansClasse = blocoNomeClasse ? blocoNomeClasse.querySelectorAll('span') : [];
+      if (spansClasse[1]) {
+        var classeExp = limpa(spansClasse[1].getAttribute('title') || spansClasse[1].textContent);
+        if (classeExp) add('Classe: ' + classeExp);
+      }
+    }
+  }
+
+  // ===== Janela de Status/Atributos =====
+  function encontrarJanelaPorTitlebar(aria) {
+    var titlebar = document.querySelector('[aria-label="' + aria + '"]');
+    return (titlebar && titlebar.parentElement) ? titlebar.parentElement : document;
+  }
+  var janelaStatus = encontrarJanelaPorTitlebar('Mover status');
+  janelaStatus.querySelectorAll('[role="status"][aria-label$=" value"]').forEach(function (el) {
+    var atributo = limpa(el.getAttribute('aria-label')).replace(/\\s*value$/i, '');
+    add(atributo + ': ' + limpa(el.textContent));
+  });
+  var readouts = janelaStatus.querySelector('.ro-win-stats-readouts');
+  if (readouts) {
+    var combate = {};
+    readouts.querySelectorAll(':scope > div').forEach(function (linha) {
+      var spans = linha.querySelectorAll(':scope > span');
+      if (spans.length >= 2) combate[limpa(spans[0].textContent)] = limpa(spans[1].textContent);
+    });
+    ['ATK', 'MATK', 'HIT', 'CRI', 'DEF', 'MDEF', 'FLEE', 'ASPD'].forEach(function (chave) {
+      if (combate[chave] != null) add(chave + ': ' + combate[chave]);
+    });
+  }
+  var pontosEl = janelaStatus.querySelector('[data-testid="status-points-remaining"]');
+  if (pontosEl) add('Pontos restantes: ' + limpa(pontosEl.textContent));
+
+  // ===== Janela de Equipamentos =====
+  var janelaEquip = encontrarJanelaPorTitlebar('Mover equipamentos');
+  var slotsEquipados = [];
+  janelaEquip.querySelectorAll('button[data-slot-state]').forEach(function (btn) {
+    var rotulo = limpa(btn.getAttribute('aria-label'));
+    if (rotulo) slotsEquipados.push(rotulo);
+  });
+  if (slotsEquipados.length) {
+    add('--- Equipamentos ---');
+    slotsEquipados.forEach(function (s) { add(s.indexOf(':') !== -1 ? s : s + ': (vazio)'); });
+  }
+
+  return linhas.length ? linhas.join('\\n') : null;
+})();`;
+async function extractGameState(accountId) {
+  const webview = grid.querySelector(`.account-card[data-id="${accountId}"] webview`);
+  if (!webview) return null;
+  try {
+    return await webview.executeJavaScript(EXTRACT_GAME_STATE_INJECT);
+  } catch (err) {
+    return null;
+  }
+}
+// ---------------------------------------------------------------------------
+// Captura de console: em vez de depender do evento 'console-message' do
+// <webview> (que em algumas versões do Electron/Chromium não é 100%
+// confiável, ou pode perder mensagens dependendo do timing), usamos o MESMO
+// princípio do RAF_THROTTLE_INJECT e do AUTOFILL_INJECT: injetamos um script
+// que SOBRESCREVE window.console.log/warn/error/info/debug diretamente
+// dentro da página do jogo, guardando cada chamada num array global
+// (window.__idleHubConsoleBuffer). Na hora de gerar o Kit-Ticket, a gente só
+// LÊ esse array via executeJavaScript — muito mais garantido, porque é o
+// mesmo mecanismo que já usamos com sucesso pro throttle de rAF e pro Zeny/h.
+// ---------------------------------------------------------------------------
+const CONSOLE_CAPTURE_INJECT = `(function(){
+  if (window.__idleHubConsoleCaptureReady) return;
+  window.__idleHubConsoleCaptureReady = true;
+  window.__idleHubConsoleBuffer = [];
+  var niveis = { log: 'LOG', warn: 'AVISO', error: 'ERRO', info: 'INFO', debug: 'DEBUG' };
+  Object.keys(niveis).forEach(function (metodo) {
+    var original = console[metodo] ? console[metodo].bind(console) : function(){};
+    console[metodo] = function () {
+      try {
+        var args = Array.prototype.slice.call(arguments).map(function (a) {
+          if (typeof a === 'string') return a;
+          try { return JSON.stringify(a); } catch (e) { return String(a); }
+        });
+        var hora = new Date().toLocaleTimeString('pt-BR');
+        window.__idleHubConsoleBuffer.push('[' + hora + '] [' + niveis[metodo] + '] ' + args.join(' '));
+        if (window.__idleHubConsoleBuffer.length > 1000) window.__idleHubConsoleBuffer.shift();
+      } catch (e) { /* nunca deixa o log quebrar o jogo */ }
+      original.apply(console, arguments);
+    };
+  });
+  // Bônus: captura também erros não tratados (uncaught exceptions) e
+  // promises rejeitadas sem .catch — informação valiosa pra debug que às
+  // vezes nem passa pelo console.error.
+  window.addEventListener('error', function (e) {
+    try {
+      var hora = new Date().toLocaleTimeString('pt-BR');
+      window.__idleHubConsoleBuffer.push('[' + hora + '] [ERRO-JS] ' + (e.message || 'erro desconhecido') + (e.filename ? ' (' + e.filename + ':' + e.lineno + ')' : ''));
+    } catch (err) { /* ignore */ }
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    try {
+      var hora = new Date().toLocaleTimeString('pt-BR');
+      var motivo = (e.reason && e.reason.message) ? e.reason.message : String(e.reason);
+      window.__idleHubConsoleBuffer.push('[' + hora + '] [PROMISE-REJEITADA] ' + motivo);
+    } catch (err) { /* ignore */ }
+  });
+})();`;
+async function extractConsoleLog(accountId) {
+  const webview = grid.querySelector(`.account-card[data-id="${accountId}"] webview`);
+  if (!webview) return null;
+  try {
+    return await webview.executeJavaScript('window.__idleHubConsoleBuffer ? window.__idleHubConsoleBuffer.join("\\n") : null');
+  } catch (err) {
+    return null;
+  }
+}
+function openReportConfirm(accountId) {
+  const acc = getAccountById(accountId);
+  if (!acc) return;
+  showConfirm(
+    'Gerar Kit-Ticket',
+    'Antes de continuar, abra as janelas de Informações básicas, Status e Equipamentos. Quando estiver tudo certo, clique em Confirmar.',
+    () => generateReportForAccount(accountId),
+  );
+}
+async function generateReportForAccount(id) {
+  const acc = getAccountById(id);
+  if (!acc) return;
+  if (acc.status !== 'open') {
+    alert('Abra a conta antes de gerar o Kit-Ticket.');
+    return;
+  }
+  const agora = new Date();
+  const pad2 = (n) => String(n).padStart(2, '0');
+  const hhmmss = `${pad2(agora.getHours())}${pad2(agora.getMinutes())}${pad2(agora.getSeconds())}`;
+  const ddmmyy = `${pad2(agora.getDate())}${pad2(agora.getMonth() + 1)}${String(agora.getFullYear()).slice(-2)}`;
+  const nomeDoHud = await extractCharacterName(id);
+  const nomeBruto = nomeDoHud || acc.name || 'Personagem';
+  const nomePersonagem = nomeBruto.replace(/[\\/:*?"<>|]/g, '_').trim() || 'Personagem';
+  const logName = `${nomePersonagem}-log-${hhmmss}-${ddmmyy}.txt`;
+  const stateName = `${nomePersonagem}-estado-${hhmmss}-${ddmmyy}.txt`;
+  const logExtraido = await extractConsoleLog(id);
+  const logContent = logExtraido || '(nenhuma mensagem de console foi registrada nesta sessão)';
+  const dataHoraLegivel = agora.toLocaleString('pt-BR');
+  const estadoExtraido = await extractGameState(id);
+  const stateContent = `=== Kit-Ticket — Estado do personagem ===\nPersonagem: ${nomeBruto}\nCapturado em: ${dataHoraLegivel}\n\n${estadoExtraido || '(não foi possível extrair o estado do personagem nesta sessão — a tela pode não estar carregada)'}`;
+  try {
+    const result = await window.nativeAPI.generateReport({ logName, logContent, stateName, stateContent });
+    if (!result || !result.ok) {
+      alert('Não foi possível gerar o Kit-Ticket. Veja o DevTools (Ctrl+Shift+I no app) para detalhes do erro.');
+    }
+  } catch (err) {
+    console.error('Erro ao gerar Kit-Ticket:', err);
+    alert('Não foi possível gerar o Kit-Ticket. Veja o DevTools (Ctrl+Shift+I no app) para detalhes do erro.');
+  }
+}
+// ---------------------------------------------------------------------------
+// Gravação de rede (HAR) — ideia do Poring: um botão tipo "record". Clica
+// pra começar a gravar o tráfego de rede daquela conta, reproduz o bug no
+// jogo, clica de novo pra parar — o app salva um arquivo .har (o mesmo
+// formato que o Chrome DevTools exporta em Network > Save all as HAR) na
+// pasta Kit-Ticket.
+// ---------------------------------------------------------------------------
+async function toggleNetworkRecording(accountId) {
+  const acc = getAccountById(accountId);
+  if (!acc) return;
+  const card = grid.querySelector(`.account-card[data-id="${accountId}"]`);
+  const btn = card ? card.querySelector('.netrecord') : null;
+  if (!acc.recordingNetwork) {
+    if (acc.status !== 'open' || !acc.webContentsId) {
+      alert('Abra a conta antes de gravar a rede.');
+      return;
+    }
+    try {
+      const result = await window.nativeAPI.startNetworkRecording({ webContentsId: acc.webContentsId });
+      if (!result || !result.ok) {
+        alert('Não foi possível iniciar a gravação de rede: ' + ((result && result.error) || 'erro desconhecido'));
+        return;
+      }
+      // Pedido do Poring: reinicia a timeline de diagnóstico dele junto com
+      // o início da gravação (se a página não tiver esse objeto, ignora
+      // silenciosamente — não pode travar a gravação de rede por causa disso).
+      if (card) {
+        const webview = card.querySelector('webview');
+        if (webview) {
+          webview.executeJavaScript(
+            'window.__roidlePresentationTimelineDiagnostics && window.__roidlePresentationTimelineDiagnostics.reset && window.__roidlePresentationTimelineDiagnostics.reset();'
+          ).catch((err) => console.error('Erro ao resetar timeline de diagnóstico:', err));
+        }
+      }
+      acc.recordingNetwork = true;
+      if (btn) {
+        btn.innerHTML = ICONS_MINI.recordStop;
+        btn.title = 'Parar gravação de rede';
+        btn.style.color = '#f87171';
+      }
+    } catch (err) {
+      console.error('Erro ao iniciar gravação de rede:', err);
+      alert('Não foi possível iniciar a gravação de rede.');
+    }
+  } else {
+    const nomeDoHud = await extractCharacterName(accountId);
+    const nomeBruto = nomeDoHud || acc.name || 'Personagem';
+    const nomePersonagem = nomeBruto.replace(/[\/:*?"<>|]/g, '_').trim() || 'Personagem';
+    const agora = new Date();
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const hhmmss = `${pad2(agora.getHours())}${pad2(agora.getMinutes())}${pad2(agora.getSeconds())}`;
+    const ddmmyy = `${pad2(agora.getDate())}${pad2(agora.getMonth() + 1)}${String(agora.getFullYear()).slice(-2)}`;
+    const harName = `${nomePersonagem}-rede-${hhmmss}-${ddmmyy}.har`;
+    // Pedido do Poring: tira o snapshot da timeline de diagnóstico dele antes
+    // de encerrar, e manda junto pro bundle (se a página não tiver esse
+    // objeto, manda null — o main.js só salva o arquivo extra se tiver algo).
+    let diagnosticsSnapshot = null;
+    if (card) {
+      const webview = card.querySelector('webview');
+      if (webview) {
+        try {
+          diagnosticsSnapshot = await webview.executeJavaScript(
+            '(window.__roidlePresentationTimelineDiagnostics && window.__roidlePresentationTimelineDiagnostics.snapshot) ? window.__roidlePresentationTimelineDiagnostics.snapshot() : null'
+          );
+        } catch (err) {
+          console.error('Erro ao tirar snapshot da timeline de diagnóstico:', err);
+        }
+      }
+    }
+    try {
+      const result = await window.nativeAPI.stopNetworkRecording({ webContentsId: acc.webContentsId, harName, diagnosticsSnapshot });
+      if (!result || !result.ok) {
+        alert('Não foi possível salvar a gravação de rede: ' + ((result && result.error) || 'erro desconhecido'));
+      }
+    } catch (err) {
+      console.error('Erro ao parar gravação de rede:', err);
+      alert('Não foi possível salvar a gravação de rede.');
+    } finally {
+      acc.recordingNetwork = false;
+      if (btn) {
+        btn.innerHTML = ICONS_MINI.record;
+        btn.title = 'Gravar rede (HAR)';
+        btn.style.color = '';
+      }
+    }
   }
 }
 function closeAllAccountsOfActiveWorkspace() {
@@ -1034,7 +1359,6 @@ function setActiveAccount(id) {
   if (activeAccountId === id) return;
   const previousId = activeAccountId;
   activeAccountId = id;
-
   // Se a conta anterior estava maximizada, a maximização "segue" pra conta
   // que você acabou de selecionar, em vez de ficar presa na antiga cobrindo a tela.
   const prevCard = previousId != null ? grid.querySelector(`.account-card[data-id="${previousId}"]`) : null;
@@ -1043,7 +1367,6 @@ function setActiveAccount(id) {
     const newCard = grid.querySelector(`.account-card[data-id="${id}"]`);
     if (newCard) newCard.classList.add('maximized');
   }
-
   const acc = getAccountById(id);
   if (acc) addressBar.value = acc.url;
   renderSidebar();
@@ -1052,7 +1375,6 @@ function setActiveAccount(id) {
   document.querySelectorAll('.account-card').forEach((el) => el.classList.toggle('active-card', Number(el.dataset.id) === id));
   updateStatusBar(); updateNavButtons(); updateZoomLabel(); updateMuteButton();
 }
-
 // ---------------------------------------------------------------------------
 // Sidebar
 // ---------------------------------------------------------------------------
@@ -1063,7 +1385,6 @@ function renderSidebar() {
   $('#workspace-icon-badge').style.color = ws ? ws.color : '';
   accountListEl.innerHTML = '';
   if (!ws) return;
-
   ws.accounts.forEach((acc) => {
     const item = document.createElement('div');
     item.className = 'account-item' + (acc.id === activeAccountId ? ' active' : '') + (acc.status === 'closed' ? ' closed' : '');
@@ -1096,7 +1417,6 @@ function renderSidebar() {
   renderQuickAccounts();
 }
 $('#close-all-btn').addEventListener('click', closeAllAccountsOfActiveWorkspace);
-
 // ---------------------------------------------------------------------------
 // Grid principal — mantém webviews de TODOS os workspaces montadas (nunca
 // remove/reparenta ao trocar de workspace: só oculta com display:none),
@@ -1107,7 +1427,6 @@ function computeAutoGrid(n) {
   const cols = Math.ceil(Math.sqrt(n));
   return { cols, rows: Math.ceil(n / cols) };
 }
-
 // ---------------------------------------------------------------------------
 // Divisórias arrastáveis na Grade automática (estilo editor de código:
 // arrastar a linha entre 2 painéis vizinhos só redimensiona esses dois)
@@ -1128,11 +1447,9 @@ function computeAutoGrid(n) {
 const GRID_PADDING = 6; // deve bater com o padding do #grid no CSS
 const GRID_GAP = 6;
 const MIN_FR = 0.2;
-
 function clearAutoGridGutters() {
   grid.querySelectorAll('.col-gutter, .row-gutter').forEach((el) => el.remove());
 }
-
 function computeTrackBoundaries(fracArray, containerSize, gap) {
   const totalFr = fracArray.reduce((a, b) => a + b, 0) || 1;
   const totalGaps = gap * Math.max(fracArray.length - 1, 0);
@@ -1146,14 +1463,12 @@ function computeTrackBoundaries(fracArray, containerSize, gap) {
   });
   return boundaries; // boundaries[i] = borda direita/inferior da faixa i (antes do gap seguinte)
 }
-
 // Recria os elementos de divisória do zero (cara — só na renderização do grid)
 function layoutAutoGridGutters(ws, cols, rows) {
   clearAutoGridGutters();
   if (!ws || ws.layout !== 'auto') return;
   const contentWidth = grid.clientWidth - GRID_PADDING * 2;
   const contentHeight = grid.clientHeight - GRID_PADDING * 2;
-
   if (cols > 1) {
     for (let i = 0; i < cols - 1; i++) {
       const gutter = document.createElement('div');
@@ -1173,7 +1488,6 @@ function layoutAutoGridGutters(ws, cols, rows) {
     repositionGutters('row', ws.autoGridRowFr, contentHeight);
   }
 }
-
 // Só reposiciona os elementos já existentes — nenhuma leitura de layout,
 // nenhuma criação de nó/listener. Chamado a cada frame durante o arraste.
 function repositionGutters(axis, fracArray, containerSize) {
@@ -1184,7 +1498,6 @@ function repositionGutters(axis, fracArray, containerSize) {
     el.style[prop] = `${GRID_PADDING + boundaries[idx] + GRID_GAP / 2 - 3}px`;
   });
 }
-
 function startAxisDrag(e, ws, i, axis) {
   e.preventDefault();
   const isCol = axis === 'col';
@@ -1197,7 +1510,6 @@ function startAxisDrag(e, ws, i, axis) {
   const containerSize = (isCol ? grid.clientWidth : grid.clientHeight) - GRID_PADDING * 2;
   const totalFr = frArray.reduce((a, b) => a + b, 0);
   const frPerPixel = totalFr / Math.max(containerSize, 1);
-
   // Cada <webview> roda num processo separado e "engole" os eventos de mouse
   // quando o cursor passa por cima dela — por isso o arraste "parava" ao
   // cruzar outra conta. Uma camada transparente por cima de tudo (elemento
@@ -1208,10 +1520,8 @@ function startAxisDrag(e, ws, i, axis) {
   captureLayer.style.cursor = isCol ? 'col-resize' : 'row-resize';
   document.body.appendChild(captureLayer);
   document.body.style.cursor = isCol ? 'col-resize' : 'row-resize';
-
   let rafId = null;
   let lastEvent = null;
-
   function apply() {
     rafId = null;
     const deltaFr = ((isCol ? lastEvent.clientX : lastEvent.clientY) - startPos) * frPerPixel;
@@ -1242,22 +1552,18 @@ function startAxisDrag(e, ws, i, axis) {
 }
 function startColumnDrag(e, ws, i) { startAxisDrag(e, ws, i, 'col'); }
 function startRowDrag(e, ws, i) { startAxisDrag(e, ws, i, 'row'); }
-
 function renderGrid() {
   const ws = getActiveWorkspace();
   const layout = ws ? (ws.layout || 'auto') : 'auto';
   const allOpenThisWorkspace = ws ? ws.accounts.filter((a) => a.status === 'open') : [];
-
   let visibleAccounts = allOpenThisWorkspace;
   if (layout === 'single') {
     const active = allOpenThisWorkspace.find((a) => a.id === activeAccountId);
     visibleAccounts = active ? [active] : (allOpenThisWorkspace[0] ? [allOpenThisWorkspace[0]] : []);
   }
   const visibleOrder = new Map(visibleAccounts.map((a, idx) => [a.id, idx]));
-
   grid.classList.toggle('layout-single', layout === 'single');
   grid.classList.toggle('layout-free', layout === 'free');
-
   const allOpenIdsEverywhere = new Set(state.workspaces.flatMap((w) => w.accounts.filter((a) => a.status === 'open').map((a) => a.id)));
   Array.from(grid.children).forEach((child) => {
     if (!child.classList || !child.classList.contains('account-card')) return;
@@ -1269,7 +1575,6 @@ function renderGrid() {
     const webview = child.querySelector('webview');
     if (webview) applyRafThrottle(webview, id, isVisible);
   });
-
   visibleAccounts.forEach((acc, idx) => {
     if (!grid.querySelector(`.account-card[data-id="${acc.id}"]`)) {
       const card = buildCard(acc);
@@ -1277,7 +1582,6 @@ function renderGrid() {
       grid.appendChild(card);
     }
   });
-
   if (layout === 'columns') {
     grid.style.gridTemplateColumns = `repeat(${Math.max(visibleAccounts.length, 1)}, 1fr)`;
     grid.style.gridTemplateRows = '1fr';
@@ -1303,17 +1607,14 @@ function renderGrid() {
       grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
     }
   }
-
   const emptyEl = $('#grid-empty-state');
   if (emptyEl) emptyEl.classList.toggle('hidden', visibleAccounts.length !== 0);
-
   clearAutoGridGutters();
   if (layout === 'auto' && ws) {
     const { cols, rows } = computeAutoGrid(visibleAccounts.length);
     if (cols > 1 || rows > 1) requestAnimationFrame(() => layoutAutoGridGutters(ws, cols, rows));
   }
 }
-
 // ---------------------------------------------------------------------------
 // Throttle de requestAnimationFrame — corrige o "bug de segundo plano" (uma
 // conta com display:none continua rodando a 60fps completos por dentro,
@@ -1347,11 +1648,9 @@ const RAF_THROTTLE_INJECT = `(function(){
     nativeCAF(id);
   };
 })();`;
-
 const BACKGROUND_THROTTLE_MS = 1500; // contas ocultas (outro workspace, ou cobertas no layout "Painel único")
 const ECO_ACTIVE_THROTTLE_MS = 200;  // conta visível, mas com Modo Eco ligado
 const rafThrottleState = new Map(); // accountId -> valor já aplicado (evita mandar executeJavaScript à toa)
-
 function computeThrottleFor(isVisible) {
   if (!isVisible) return BACKGROUND_THROTTLE_MS;
   return state.settings.modoEco ? ECO_ACTIVE_THROTTLE_MS : 0;
@@ -1372,19 +1671,16 @@ function refreshAllRafThrottles() {
     if (webview) applyRafThrottle(webview, id, isVisible);
   });
 }
-
 function buildCard(acc) {
   const card = document.createElement('div');
   card.className = 'account-card';
   card.dataset.id = acc.id;
   card.draggable = true;
-
   const ws = state.workspaces.find((w) => w.accounts.some((a) => a.id === acc.id));
   if (ws && ws.layout === 'free') {
     card.style.width = (acc.freeWidth || 420) + 'px';
     card.style.height = (acc.freeHeight || 300) + 'px';
   }
-
   const header = document.createElement('div');
   header.className = 'card-header';
   header.innerHTML = `
@@ -1395,23 +1691,21 @@ function buildCard(acc) {
     <span class="url blur-target">${escapeHtml(acc.url)}</span>
     <button class="mute" title="Mudo">${muteIcon(acc.muted)}</button>
     <button class="reload" title="Recarregar">${ICONS_MINI.reload}</button>
+    <button class="report" title="Kit-Ticket" style="color:#f5a524">${ICONS_MINI.report}</button>
+    <button class="netrecord" title="Gravar rede (HAR)">${ICONS_MINI.record}</button>
     <button class="open-window" title="Abrir em nova janela">${ICONS_MINI.openWindow}</button>
     <button class="expand" title="Maximizar/Restaurar">${ICONS_MINI.expand}</button>
     <button class="close" title="Fechar conta">${ICONS_MINI.close}</button>
   `;
-
   const wrap = document.createElement('div');
   wrap.className = 'card-webview-wrap';
-
   const webview = document.createElement('webview');
   webview.setAttribute('src', acc.url);
   webview.setAttribute('partition', acc.partition);
   webview.setAttribute('allowpopups', '');
   try { window.nativeAPI.registerPartitionDownloads(acc.partition); } catch (err) { /* ignore */ }
-
   // Interagir com o conteúdo da página seleciona a conta automaticamente
   webview.addEventListener('focus', () => setActiveAccount(acc.id));
-
   webview.addEventListener('dom-ready', () => {
     acc.webContentsId = webview.getWebContentsId();
     if (effectiveMuted(acc)) webview.setAudioMuted(true);
@@ -1421,6 +1715,10 @@ function buildCard(acc) {
     webview.executeJavaScript(RAF_THROTTLE_INJECT).then(() => {
       applyRafThrottle(webview, acc.id, card.style.display !== 'none');
     }).catch((err) => console.error('Erro ao aplicar throttle de rAF:', err));
+    // Kit-Ticket: reinjeta a captura de console a cada carregamento de página
+    // (window.__idleHubConsoleCaptureReady garante que não duplica o patch,
+    // e o buffer reseta sozinho porque é uma variável nova na nova página).
+    webview.executeJavaScript(CONSOLE_CAPTURE_INJECT).catch((err) => console.error('Erro ao aplicar captura de console:', err));
     if (credentials[acc.id] && credentials[acc.id].length) {
       autofillAccount(acc.id, false);
     }
@@ -1446,14 +1744,11 @@ function buildCard(acc) {
       setTimeout(() => autofillAccount(acc.id, false), 700);
     }
   });
-
   wrap.appendChild(webview);
   card.appendChild(header);
   card.appendChild(wrap);
-
   card.addEventListener('mousedown', () => setActiveAccount(acc.id));
   card.addEventListener('contextmenu', (e) => { e.preventDefault(); openContextMenu(e.clientX, e.clientY, acc.id); });
-
   header.querySelector('.mute').addEventListener('click', (ev) => {
     ev.stopPropagation();
     acc.muted = !acc.muted;
@@ -1463,6 +1758,8 @@ function buildCard(acc) {
     schedulePersist();
   });
   header.querySelector('.reload').addEventListener('click', (ev) => { ev.stopPropagation(); webview.reload(); });
+  header.querySelector('.report').addEventListener('click', (ev) => { ev.stopPropagation(); openReportConfirm(acc.id); });
+  header.querySelector('.netrecord').addEventListener('click', (ev) => { ev.stopPropagation(); toggleNetworkRecording(acc.id); });
   header.querySelector('.open-window').addEventListener('click', (ev) => { ev.stopPropagation(); openAccountInWindow(acc.id); });
   header.dataset.tooltip = t('dblClickHint');
   header.querySelector('.expand').addEventListener('click', (ev) => { ev.stopPropagation(); card.classList.toggle('maximized'); });
@@ -1471,7 +1768,6 @@ function buildCard(acc) {
     card.classList.toggle('maximized');
   });
   header.querySelector('.close').addEventListener('click', (ev) => { ev.stopPropagation(); closeAccount(acc.id); });
-
   card.addEventListener('dragstart', (e) => { card.classList.add('dragging'); e.dataTransfer.setData('text/acc-id', String(acc.id)); });
   card.addEventListener('dragend', () => card.classList.remove('dragging'));
   card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('drag-over'); });
@@ -1481,7 +1777,6 @@ function buildCard(acc) {
     const draggedId = Number(e.dataTransfer.getData('text/acc-id'));
     if (draggedId) reorderAccount(draggedId, acc.id);
   });
-
   if (ws && ws.layout === 'free' && 'ResizeObserver' in window) {
     let resizeTimer = null;
     const observer = new ResizeObserver((entries) => {
@@ -1494,10 +1789,8 @@ function buildCard(acc) {
     });
     observer.observe(card);
   }
-
   return card;
 }
-
 // ---------------------------------------------------------------------------
 // Menu de contexto (conta)
 // ---------------------------------------------------------------------------
@@ -1564,7 +1857,6 @@ ctxMenu.addEventListener('click', (e) => {
   }
   closeContextMenu();
 });
-
 // ---------------------------------------------------------------------------
 // Toolbar: voltar / avançar / recarregar / início / endereço / aplicar a todas
 // ---------------------------------------------------------------------------
@@ -1602,7 +1894,6 @@ function navigateAllOpen(url) {
 }
 $('#nav-go-all').addEventListener('click', () => navigateAllOpen(addressBar.value || DEFAULT_URL));
 addressBar.addEventListener('keydown', (e) => { if (e.key === 'Enter') navigateActive(addressBar.value); });
-
 // ---------------------------------------------------------------------------
 // Toolbar: mudo / zoom / downloads / modo tela limpa / tela cheia / config / ajuda
 // ---------------------------------------------------------------------------
@@ -1623,7 +1914,6 @@ $('#topbar-mute').addEventListener('click', () => {
   updateMuteButton();
   schedulePersist();
 });
-
 function updateZoomLabel() {
   const acc = getActiveAccount();
   $('#zoom-label').textContent = `${Math.round((acc ? acc.zoomFactor || 1 : 1) * 100)}%`;
@@ -1653,7 +1943,6 @@ $('#zoom-popover').addEventListener('click', (e) => e.stopPropagation());
 $('#zoom-in').addEventListener('click', () => adjustZoom(0.1));
 $('#zoom-out').addEventListener('click', () => adjustZoom(-0.1));
 $('#zoom-reset').addEventListener('click', resetZoom);
-
 // ---------------------------------------------------------------------------
 // Downloads: popover flutuante com os downloads desta sessão
 // ---------------------------------------------------------------------------
@@ -1701,7 +1990,6 @@ $('#topbar-downloads').addEventListener('click', (e) => {
 });
 $('#downloads-popover').addEventListener('click', (e) => e.stopPropagation());
 document.addEventListener('click', () => $('#downloads-popover').classList.add('hidden'));
-
 $('#topbar-eco').addEventListener('click', toggleEcoMode);
 $('#topbar-presentation').addEventListener('click', togglePresentationMode);
 $('#topbar-cleanmode').addEventListener('click', toggleCleanMode);
@@ -1714,23 +2002,18 @@ async function toggleFullscreenMode() {
 $('#topbar-fullscreen').addEventListener('click', toggleFullscreenMode);
 $('#topbar-settings').addEventListener('click', () => openSettingsModal());
 $('#topbar-help').addEventListener('click', () => openShortcutsModal());
-
-
 // ---------------------------------------------------------------------------
 // Abertura de links do Midgard Idle no navegador padrão
 // ---------------------------------------------------------------------------
 $('#topbar-midgard-wiki').addEventListener('click', () => {
   window.nativeAPI.openExternal('https://midgardidlewikifull.vercel.app/');
 });
-
 $('#topbar-midgard-ranking').addEventListener('click', () => {
   window.nativeAPI.openExternal('https://midgardidle.ro/rankings');
 });
-
 $('#topbar-midgard-discord').addEventListener('click', () => {
   window.nativeAPI.openExternal('https://discord.gg/R7rRrFxBPd');
 });
-
 // ---------------------------------------------------------------------------
 // Atalhos de teclado — sistema com combinações remapeáveis pelo usuário
 // ---------------------------------------------------------------------------
@@ -1762,7 +2045,6 @@ const ACTION_DEFS = [
 // de texto NOSSO (endereço, nome de script, etc.) — nunca interceptamos esses
 // ali, mesmo que "excluir conta" use Ctrl+X por padrão.
 const NATIVE_EDIT_KEYS = ['x', 'c', 'v', 'a', 'z', 'y'];
-
 function getBinding(actionId) {
   const custom = state.settings.keybindings && state.settings.keybindings[actionId];
   if (custom) return custom;
@@ -1796,7 +2078,6 @@ function isEditableTarget(target) {
   const tag = target.tagName;
   return tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable;
 }
-
 function runAction(id) {
   switch (id) {
     case 'nextPanel': {
@@ -1849,17 +2130,13 @@ function runAction(id) {
     case 'help': openShortcutsModal(); break;
   }
 }
-
 window.addEventListener('keydown', (e) => {
   // Modo "capturando nova tecla" no editor de atalhos tem prioridade sobre tudo
   if (capturingActionId) { captureKeybinding(e); return; }
-
   const mod = e.ctrlKey || e.metaKey;
-
   // Nunca atrapalha recortar/copiar/colar/desfazer normais enquanto o foco
   // está num campo de texto nosso (mesmo que "Excluir conta" use Ctrl+X).
   if (isEditableTarget(e.target) && mod && !e.altKey && NATIVE_EDIT_KEYS.includes(e.key.toLowerCase())) return;
-
   // Ctrl+1..9 seleciona o painel — é uma faixa, não faz parte do remapeamento
   if (mod && !e.shiftKey && !e.altKey && /^[1-9]$/.test(e.key)) {
     e.preventDefault();
@@ -1868,12 +2145,10 @@ window.addEventListener('keydown', (e) => {
     if (acc) setActiveAccount(acc.id);
     return;
   }
-
   for (const def of ACTION_DEFS) {
     if (comboMatches(e, getBinding(def.id))) { e.preventDefault(); runAction(def.id); return; }
   }
 });
-
 // ---------------------------------------------------------------------------
 // Modal: Atalhos de teclado (editável — clique em "Alterar" pra remapear)
 // ---------------------------------------------------------------------------
@@ -1898,12 +2173,10 @@ function captureKeybinding(e) {
 function renderShortcutsList() {
   const wrap = $('#shortcuts-list');
   wrap.innerHTML = '';
-
   const fixedRow = document.createElement('div');
   fixedRow.className = 'shortcut-row';
   fixedRow.innerHTML = `<span>${escapeHtml(t('shcPanel19'))}</span><span class="kbd-group"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>1–9</kbd></span>`;
   wrap.appendChild(fixedRow);
-
   ACTION_DEFS.forEach((def) => {
     const combo = getBinding(def.id);
     const row = document.createElement('div');
@@ -1929,7 +2202,6 @@ $('#shortcuts-reset').addEventListener('click', () => {
     renderShortcutsList();
   });
 });
-
 // ---------------------------------------------------------------------------
 // Modal: criar / editar conta (nome + cor + ícone + URL + workspace +
 // credenciais de autopreenchimento)
@@ -1940,40 +2212,32 @@ let modalTargetId = null;
 let modalColorIdx = 0;
 let modalIconKey = 'apps';
 let modalCreds = [];
-
 function openAccountModal(mode, accountId) {
   modalMode = mode === 'edit' ? 'edit' : 'create';
   modalTargetId = modalMode === 'edit' ? accountId : null;
   const acc = modalTargetId != null ? getAccountById(modalTargetId) : null;
   const activeWs = getActiveWorkspace() || { accounts: [], id: state.workspaces[0] ? state.workspaces[0].id : null };
   const defaultName = nextSequentialName(activeWs.accounts.map((a) => a.name), t('accountWord'));
-
   $('#modal-title').textContent = modalTargetId != null ? t('editAccount') : t('addAccount');
   $('#modal-name').value = acc ? acc.name : defaultName;
   $('#modal-url').value = acc ? acc.defaultUrl : '';
-
   // Na criação dá pra escolher o workspace; na edição a conta já tem workspace
   $('#modal-workspace-wrap').classList.toggle('hidden', modalMode === 'edit');
   const wsSelect = $('#modal-workspace');
   wsSelect.innerHTML = state.workspaces.map((w) => `<option value="${w.id}">${escapeHtml(w.name)}</option>`).join('');
   if (activeWs.id != null) wsSelect.value = String(activeWs.id);
-
   $('#modal-open-wrap').classList.toggle('hidden', modalMode === 'edit');
   $('#modal-open').checked = true;
-
   modalColorIdx = acc ? (acc.colorIdx || 0) : (activeWs.accounts.length % ACCOUNT_COLORS.length);
   modalIconKey = acc ? (acc.iconKey || 'apps') : 'apps';
   renderModalColors();
   renderModalIcons();
-
   modalCreds = (modalMode === 'edit' && acc && credentials[acc.id]) ? credentials[acc.id].map((c) => ({ ...c })) : [];
   $('#modal-creds-sec').classList.toggle('hidden', modalMode !== 'edit');
   renderModalCreds();
-
   overlay.classList.remove('hidden');
   $('#modal-name').focus();
 }
-
 function renderModalColors() {
   const wrap = $('#modal-colors'); wrap.innerHTML = '';
   COLORS.forEach((c, i) => {
@@ -1994,7 +2258,6 @@ function renderModalIcons() {
     wrap.appendChild(b);
   });
 }
-
 function renderModalCreds() {
   const wrap = $('#modal-creds-list');
   if (!modalCreds.length) {
@@ -2044,7 +2307,6 @@ function renderModalCreds() {
   });
 }
 $('#modal-creds-add').addEventListener('click', () => { modalCreds.push({ site: '', login: '', senha: '', autoFill: true, selectors: { login: '', senha: '' } }); renderModalCreds(); });
-
 $('#modal-cancel').addEventListener('click', () => overlay.classList.add('hidden'));
 $('#modal-confirm').addEventListener('click', async () => {
   const name = $('#modal-name').value.trim();
@@ -2061,18 +2323,15 @@ $('#modal-confirm').addEventListener('click', async () => {
   }
 });
 overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.add('hidden'); });
-
 $('#add-account-btn').addEventListener('click', () => openAccountModal('create'));
 $('#empty-add-account-btn').addEventListener('click', () => openAccountModal('create'));
 $('#add-workspace-btn').addEventListener('click', () => createWorkspace());
-
 // ---------------------------------------------------------------------------
 // Credenciais de autopreenchimento — login/senha por conta, criptografadas no
 // arquivo credentials.json (safeStorage). Chamadas de autofill são rejeitadas
 // silenciosamente (o site bloqueia ou não acha o campo), então nada quebra.
 // ---------------------------------------------------------------------------
 let credentials = {}; // accountId -> [{ site, login, senha, autoFill, selectors }]
-
 async function persistAccountCredentials(accountId, list) {
   const clean = (list || [])
     .map((c) => ({
@@ -2091,18 +2350,14 @@ async function persistAccountCredentials(accountId, list) {
   credentials[accountId] = clean;
   try { await window.nativeAPI.saveCredentials({ accountId, list: clean }); } catch (err) { console.error('Falha ao salvar credenciais', err); }
 }
-
 async function loadCredentials() {
   try { credentials = await window.nativeAPI.loadCredentials(); } catch (err) { console.error('Falha ao carregar credenciais', err); }
   if (!credentials || typeof credentials !== 'object') credentials = {};
 }
-
 // ---------------------------------------------------------------------------
 // Autofill: script injetado na página de cada conta. Detecta campos de
-// email/text + senha sozinhos (com override opcional via seletores CSS por
-// site) e preenche de um jeito compatível com frameworks (React etc.) usando
+// login/senha por heurística (ou seletores customizados por site) e usa
 // o setter nativo + eventos input/change.
-// ---------------------------------------------------------------------------
 const AUTOFILL_INJECT = `(function(){
   if (window.__idleHubFillReady) return;
   window.__idleHubFillReady = true;
@@ -2182,7 +2437,6 @@ const AUTOFILL_INJECT = `(function(){
     return false;
   };
 })();`;
-
 function autofillAccount(accountId, force) {
   const list = credentials[accountId];
   if (!list || !list.length) return;
@@ -2191,14 +2445,12 @@ function autofillAccount(accountId, force) {
   const call = force ? 'window.__idleHubFill(%s, true)' : 'window.__idleHubAutoFill(%s)';
   webview.executeJavaScript(AUTOFILL_INJECT + '; ' + call.replace('%s', JSON.stringify(list)) + ';').catch(() => { /* site bloqueia ou não tem o campo — segue o jogo */ });
 }
-
 // ---------------------------------------------------------------------------
 // Titlebar custom
 // ---------------------------------------------------------------------------
 $('#btn-min').addEventListener('click', () => window.nativeAPI.minimize());
 $('#btn-max').addEventListener('click', () => window.nativeAPI.maximize());
 $('#btn-close').addEventListener('click', () => window.nativeAPI.close());
-
 // ---------------------------------------------------------------------------
 // DOAÇÃO — edite tudo aqui: textos, imagem e o código Pix (somente o
 // códigoPix precisa ser trocado; a imagem pix-qrcode.png é a mesma).
@@ -2215,7 +2467,6 @@ const DONATE_CONFIG = {
   textoFallbackImagem: 'QR Code indisponível — use o código Pix abaixo',
   urlExterna: '', // ex: 'https://github.com/sponsors/' (modal é usado se vazio)
 };
-
 const donateOverlay = $('#donate-overlay');
 function openDonateModal() {
   if (DONATE_CONFIG.urlExterna) { window.nativeAPI.openExternal(DONATE_CONFIG.urlExterna); return; }
@@ -2262,7 +2513,6 @@ $('#donate-close').addEventListener('click', closeDonateModal);
 $('#donate-close2').addEventListener('click', closeDonateModal);
 $('#donate-copy').addEventListener('click', copyPixCode);
 donateOverlay.addEventListener('click', (e) => { if (e.target === donateOverlay) closeDonateModal(); });
-
 // ---------------------------------------------------------------------------
 // Barra de status
 // ---------------------------------------------------------------------------
@@ -2278,7 +2528,6 @@ function updateStatusBar() {
   const acc = getActiveAccount();
   $('#status-active').textContent = acc ? t('activeAccountSuffix', { name: acc.name }) : t('noActiveAccount');
 }
-
 // ---------------------------------------------------------------------------
 // Estatísticas reais de CPU / RAM
 // ---------------------------------------------------------------------------
@@ -2303,7 +2552,6 @@ async function refreshStats() {
   } catch (err) { console.error('Erro ao obter estatísticas', err); }
 }
 setInterval(refreshStats, 2000);
-
 // ---------------------------------------------------------------------------
 // Zeny/h — lê o "Saldo potencial/h" que o próprio jogo já mostra em cada
 // conta (via <dt>/<dd>) e soma de todas as contas abertas, em qualquer
@@ -2364,7 +2612,6 @@ async function refreshZenyRates() {
   if (el) el.textContent = found > 0 ? `${formatZeny(total)} Zeny/h (${found} conta${found > 1 ? 's' : ''})` : '';
 }
 setInterval(refreshZenyRates, 5000);
-
 // ---------------------------------------------------------------------------
 // Botão de pânico: limpa o cache HTTP e recarrega TODAS as contas abertas
 // (de todos os workspaces), ignorando cache — pra usar quando o jogo
@@ -2420,13 +2667,11 @@ function updateUptimeTimers() {
 setInterval(updateUptimeTimers, 1000);
 setInterval(() => { if (isDirty) persistState(); }, 15000);
 window.addEventListener('beforeunload', () => { persistState(); });
-
 // ---------------------------------------------------------------------------
 // Atalhos de teclado globais
 // ---------------------------------------------------------------------------
 // (Os atalhos de teclado agora são tratados pelo sistema data-driven definido
 // mais acima, junto com o editor de atalhos do modal de Ajuda — ver ACTION_DEFS.)
-
 // ---------------------------------------------------------------------------
 // Modal: Configurações
 // ---------------------------------------------------------------------------
@@ -2436,7 +2681,6 @@ function switchSettingsTab(tab) {
   document.querySelectorAll('.settings-panel').forEach((p) => p.classList.toggle('active', p.dataset.panel === tab));
 }
 document.querySelectorAll('.settings-tab').forEach((b) => b.addEventListener('click', () => switchSettingsTab(b.dataset.tab)));
-
 async function openSettingsModal() {
   const s = state.settings;
   $('#update-result-box').classList.add('hidden');
@@ -2464,7 +2708,6 @@ async function openSettingsModal() {
 }
 $('#settings-close').addEventListener('click', () => settingsOverlay.classList.add('hidden'));
 settingsOverlay.addEventListener('click', (e) => { if (e.target === settingsOverlay) settingsOverlay.classList.add('hidden'); });
-
 $('#set-idioma').addEventListener('change', (e) => { state.settings.idioma = e.target.value; applyLanguage(e.target.value); schedulePersist(); });
 $('#set-tema').addEventListener('change', (e) => { state.settings.tema = e.target.value; applyTheme(e.target.value); schedulePersist(); });
 $('#set-login-item').addEventListener('change', async (e) => {
@@ -2512,7 +2755,6 @@ $('#set-import').addEventListener('click', async () => {
 // A URL do Gist é fixa em UPDATE_GIST_URL (topo do arquivo), não aparece
 // em lugar nenhum da interface.
 // ---------------------------------------------------------------------------
-
 function renderUpdateResult(html, stateClass) {
   const box = $('#update-result-box');
   box.classList.remove('hidden');
@@ -2550,7 +2792,6 @@ $('#set-check-updates').addEventListener('click', async () => {
     btn.disabled = false;
   }
 });
-
 // Verificação silenciosa ao abrir o app — só mostra o toast se houver
 // atualização de verdade; erros/link não configurado ficam em silêncio.
 let updateToastTimer = null;
@@ -2576,7 +2817,6 @@ function closeUpdateToast() {
   setTimeout(() => toast.classList.add('hidden'), 200);
 }
 $('#update-toast-close').addEventListener('click', closeUpdateToast);
-
 function checkForUpdatesOnStartup() {
   const gistUrl = UPDATE_GIST_URL;
   if (!gistUrl) return;
@@ -2586,7 +2826,6 @@ function checkForUpdatesOnStartup() {
     }
   }).catch(() => { /* silencioso — não incomoda o usuário com erro de rede ao abrir o app */ });
 }
-
 // ---------------------------------------------------------------------------
 // Scripts / Extras — userscripts estilo Tampermonkey, com alvo por workspace/conta
 // ---------------------------------------------------------------------------
@@ -2615,9 +2854,7 @@ function injectScriptIntoOpenMatches(script) {
     if (webview) webview.executeJavaScript(script.code).catch((err) => console.error(`Erro no script "${script.name}":`, err));
   });
 }
-
 let editingScriptId = null;
-
 function populateScriptTargetWorkspaces() {
   const sel = $('#script-target-ws');
   const current = sel.value;
@@ -2638,7 +2875,6 @@ function renderScriptTargetAccounts() {
   `).join('');
 }
 $('#script-target-ws').addEventListener('change', renderScriptTargetAccounts);
-
 function renderScriptsList() {
   const wrap = $('#scripts-list');
   if (!state.scripts.length) { wrap.innerHTML = '<span class="settings-subtext">Nenhum script adicionado ainda.</span>'; return; }
@@ -2674,7 +2910,6 @@ function renderScriptsList() {
     wrap.appendChild(row);
   });
 }
-
 function resetScriptForm() {
   editingScriptId = null;
   $('#scripts-form-title').textContent = 'Adicionar script';
@@ -2704,14 +2939,12 @@ function startEditScript(id) {
   $('#script-name').scrollIntoView({ block: 'nearest' });
 }
 $('#script-cancel-edit').addEventListener('click', resetScriptForm);
-
 $('#script-save-btn').addEventListener('click', () => {
   const name = $('#script-name').value.trim();
   const code = $('#script-code').value;
   if (!name || !code.trim()) return;
   const scopeWorkspaceId = Number($('#script-target-ws').value) || null;
   const checkedAccounts = Array.from(document.querySelectorAll('#script-target-accounts input[type="checkbox"]:checked')).map((cb) => Number(cb.value));
-
   if (editingScriptId != null) {
     const script = state.scripts.find((s) => s.id === editingScriptId);
     if (script) {
@@ -2731,7 +2964,6 @@ $('#script-save-btn').addEventListener('click', () => {
   renderScriptsList();
   schedulePersist();
 });
-
 function openScriptsModal() {
   populateScriptTargetWorkspaces();
   resetScriptForm();
@@ -2741,7 +2973,6 @@ function openScriptsModal() {
 $('#open-scripts-btn').addEventListener('click', openScriptsModal);
 $('#scripts-close').addEventListener('click', () => $('#scripts-overlay').classList.add('hidden'));
 $('#scripts-overlay').addEventListener('click', (e) => { if (e.target === $('#scripts-overlay')) $('#scripts-overlay').classList.add('hidden'); });
-
 // ---------------------------------------------------------------------------
 // Tooltip customizado — substitui o balão nativo do sistema (lento e feio)
 // por um bem mais rápido de aparecer e no estilo visual do app. Qualquer
@@ -2751,7 +2982,6 @@ const TOOLTIP_DELAY_MS = 150;
 let tooltipEl = null;
 let tooltipTimer = null;
 let currentTooltipTarget = null;
-
 function positionTooltip(target) {
   const rect = target.getBoundingClientRect();
   const tRect = tooltipEl.getBoundingClientRect();
@@ -2796,33 +3026,28 @@ function initTooltipSystem() {
   window.addEventListener('blur', hideTooltip);
 }
 initTooltipSystem();
-
 // ---------------------------------------------------------------------------
 // Seletor Rápido de Contas (1-12) na Barra Superior
 // ---------------------------------------------------------------------------
 function renderQuickAccounts() {
   const bar = $('#quick-accounts-bar');
   if (!bar) return;
-  bar.innerHTML = '';
-  
+  bar.innerHTML = '';    
   const ws = getActiveWorkspace();
   if (!ws || !ws.accounts.length) return;
-
   ws.accounts.slice(0, 12).forEach((acc, index) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'quick-acc-btn' + (acc.id === activeAccountId ? ' active' : '') + (acc.status === 'closed' ? ' closed' : '');
     btn.textContent = index + 1;
-    btn.dataset.tooltip = `${acc.name} (${acc.status === 'open' ? 'Online' : 'Fechada'})`;
-    
+    btn.dataset.tooltip = `${acc.name} (${acc.status === 'open' ? 'Online' : 'Fechada'})`;      
     btn.addEventListener('click', () => {
       if (acc.status === 'closed') {
         openAccount(acc.id);
       } else {
         setActiveAccount(acc.id);
       }
-    });
-    
+    });      
     bar.appendChild(btn);
   });
 }

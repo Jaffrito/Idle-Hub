@@ -1,23 +1,20 @@
+
 const { app, BrowserWindow, ipcMain, webContents, session, Menu, dialog, shell, safeStorage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const https = require('https');
-
 let mainWindow;
 const STATE_FILE = () => path.join(app.getPath('userData'), 'state.json');
 const registeredPartitions = new Set();
-
 // Janelas independentes abertas via "Abrir em nova janela" (uma por conta).
 // accountId -> BrowserWindow
 const accountWindows = new Map();
-
 function createWindow() {
   // Em desenvolvimento (npm start), usa build/icon.png se existir — sem quebrar
   // caso o arquivo ainda não tenha sido criado. No build final (.exe/.AppImage/.dmg)
   // quem define o ícone é a config "build" do package.json (electron-builder).
   const devIconPath = path.join(__dirname, 'build', 'icon.png');
   const devIcon = fs.existsSync(devIconPath) ? devIconPath : undefined;
-
   mainWindow = new BrowserWindow({
     width: 1440,
     height: 900,
@@ -35,18 +32,14 @@ function createWindow() {
       sandbox: false,
     },
   });
-
   mainWindow.loadFile('index.html');
 }
 // Impede que o Chromium reduza a frequência de temporizadores (setInterval/setTimeout) em segundo plano
 app.commandLine.appendSwitch('disable-background-timer-throttling');
-
 // Desativa a suspensão de processos de renderização quando a janela perde o foco ou é oculta
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
-
 // Evita que janelas encobertas por outros aplicativos entrem em modo de economia de recursos
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
-
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null); // remove qualquer resquício do menu padrão (File/Edit/View/Window/Help)
   createWindow();
@@ -54,11 +47,9 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
-
 // ---------------------------------------------------------------------------
 // Estatísticas reais de CPU/RAM
 // ---------------------------------------------------------------------------
@@ -71,12 +62,10 @@ ipcMain.handle('get-process-stats', async () => {
     memoryMB: m.memory ? Math.round(m.memory.workingSetSize / 1024) : 0,
   }));
 });
-
 ipcMain.handle('get-pid-for-webcontents', (event, webContentsId) => {
   const wc = webContents.fromId(webContentsId);
   return wc ? wc.getOSProcessId() : null;
 });
-
 // ---------------------------------------------------------------------------
 // Persistência (salvar/restaurar contas, workspaces e configurações)
 // ---------------------------------------------------------------------------
@@ -89,7 +78,6 @@ ipcMain.handle('save-state', (event, data) => {
     return false;
   }
 });
-
 ipcMain.handle('load-state', () => {
   try {
     if (!fs.existsSync(STATE_FILE())) return null;
@@ -99,7 +87,6 @@ ipcMain.handle('load-state', () => {
     return null;
   }
 });
-
 // ---------------------------------------------------------------------------
 // Credenciais de autopreenchimento (logins/senhas por conta) — criptografadas
 // com safeStorage (chave por usuário/máquina no sistema), num arquivo próprio
@@ -107,7 +94,6 @@ ipcMain.handle('load-state', () => {
 // autoFill, selectors } ] }. Senhas NUNCA vão para o state.json/backup.
 // ---------------------------------------------------------------------------
 const CREDENTIALS_FILE = () => path.join(app.getPath('userData'), 'credentials.json');
-
 function readAllCredentials() {
   try {
     if (!fs.existsSync(CREDENTIALS_FILE())) return {};
@@ -119,7 +105,6 @@ function readAllCredentials() {
     return {};
   }
 }
-
 function writeAllCredentials(data) {
   try {
     if (!safeStorage.isEncryptionAvailable()) return false;
@@ -131,7 +116,6 @@ function writeAllCredentials(data) {
     return false;
   }
 }
-
 ipcMain.handle('save-credentials', (event, data) => {
   const all = readAllCredentials();
   const accountId = String(data && data.accountId != null ? data.accountId : '');
@@ -148,15 +132,12 @@ ipcMain.handle('save-credentials', (event, data) => {
   }));
   return { ok: writeAllCredentials(all) };
 });
-
 ipcMain.handle('delete-credentials', (event, accountId) => {
   const all = readAllCredentials();
   delete all[String(accountId)];
   return { ok: writeAllCredentials(all) };
 });
-
 ipcMain.handle('load-credentials', () => readAllCredentials());
-
 // ---------------------------------------------------------------------------
 // Limpar dados de sessão (cookies/localStorage/cache) de uma partição
 // ---------------------------------------------------------------------------
@@ -169,7 +150,6 @@ ipcMain.handle('clear-partition', async (event, partition) => {
     return false;
   }
 });
-
 // "Botão de pânico": limpa só o CACHE HTTP de uma partição (JS/CSS/imagens
 // já baixados) — diferente do clear-partition acima, isso NÃO mexe em
 // cookies, localStorage nem login. Usado quando o jogo atualiza e o cache
@@ -183,7 +163,6 @@ ipcMain.handle('clear-cache', async (event, partition) => {
     return false;
   }
 });
-
 // ---------------------------------------------------------------------------
 // Configurações: versões, iniciar com o sistema, exportar/importar, downloads
 // ---------------------------------------------------------------------------
@@ -192,7 +171,6 @@ ipcMain.handle('get-versions', () => ({
   electron: process.versions.electron,
   chrome: process.versions.chrome,
 }));
-
 ipcMain.handle('get-login-item', () => app.getLoginItemSettings().openAtLogin);
 ipcMain.handle('set-login-item', (event, enabled) => {
   try {
@@ -203,13 +181,11 @@ ipcMain.handle('set-login-item', (event, enabled) => {
     return false;
   }
 });
-
 ipcMain.handle('choose-downloads-folder', async () => {
   const result = await dialog.showOpenDialog(mainWindow, { properties: ['openDirectory'] });
   if (result.canceled || !result.filePaths.length) return null;
   return result.filePaths[0];
 });
-
 ipcMain.handle('export-state', async (event, data) => {
   const result = await dialog.showSaveDialog(mainWindow, {
     defaultPath: 'multi-conta-manager-backup.json',
@@ -224,7 +200,6 @@ ipcMain.handle('export-state', async (event, data) => {
     return { ok: false };
   }
 });
-
 ipcMain.handle('import-state', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile'],
@@ -238,14 +213,12 @@ ipcMain.handle('import-state', async () => {
     return null;
   }
 });
-
 // Downloads dentro das <webview>: cada conta usa sua própria partição/sessão,
 // então registramos o listener de download nela assim que a conta é criada.
 function handleDownload(event, item, webContents) {
   const downloadId = `dl-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const send = (payload) => { if (mainWindow) mainWindow.webContents.send('download-event', { id: downloadId, ...payload }); };
   send({ state: 'started', filename: item.getFilename(), url: item.getURL(), startTime: Date.now() });
-
   try {
     let settings = {};
     if (fs.existsSync(STATE_FILE())) {
@@ -263,7 +236,6 @@ function handleDownload(event, item, webContents) {
   } catch (err) {
     console.error('Erro ao tratar download:', err);
   }
-
   item.on('updated', (e, state) => {
     if (state === 'progressing') {
       send({ state: 'progressing', receivedBytes: item.getReceivedBytes(), totalBytes: item.getTotalBytes() });
@@ -275,17 +247,14 @@ function handleDownload(event, item, webContents) {
     send({ state: state === 'completed' ? 'completed' : 'cancelled', savePath: item.getSavePath() });
   });
 }
-
 function ensurePartitionDownloads(partition) {
   if (!partition || registeredPartitions.has(partition)) return;
   registeredPartitions.add(partition);
   session.fromPartition(partition).on('will-download', handleDownload);
 }
-
 ipcMain.on('register-partition-downloads', (event, partition) => {
   ensurePartitionDownloads(partition);
 });
-
 // ---------------------------------------------------------------------------
 // Abrir conta em uma janela própria (fora do grid) — carrega a MESMA UI do
 // Idle Hub (index.html), só que em "modo standalone": um novo grid com essa
@@ -301,14 +270,12 @@ ipcMain.handle('open-account-window', (event, data) => {
   if (!accountId || !partition || !/^https?:\/\//i.test(url)) {
     return { ok: false, error: 'invalid-args' };
   }
-
   const existing = accountWindows.get(accountId);
   if (existing && !existing.isDestroyed()) {
     if (existing.isMinimized()) existing.restore();
     existing.focus();
     return { ok: true, focused: true };
   }
-
   const win = new BrowserWindow({
     width: 1280,
     height: 820,
@@ -325,12 +292,9 @@ ipcMain.handle('open-account-window', (event, data) => {
       sandbox: false,
     },
   });
-
   ensurePartitionDownloads(partition);
-
   win.on('closed', () => accountWindows.delete(accountId));
   accountWindows.set(accountId, win);
-
   win.loadFile('index.html', {
     query: {
       standalone: '1',
@@ -348,7 +312,6 @@ ipcMain.handle('open-account-window', (event, data) => {
   });
   return { ok: true, focused: false };
 });
-
 // Fecha a janela própria de uma conta, se existir (usado ao fechar/excluir a
 // conta ou limpar seus dados a partir do painel principal).
 ipcMain.handle('close-account-window', (event, accountId) => {
@@ -356,7 +319,199 @@ ipcMain.handle('close-account-window', (event, accountId) => {
   if (win && !win.isDestroyed()) win.close();
   return true;
 });
+// ---------------------------------------------------------------------------
+// Kit-Ticket: gera um pacote de suporte (log do console + estado do
+// personagem, ambos extraídos direto do HTML/console da própria página —
+// sem screenshot, já que todos os dados relevantes já vêm do front-end) para
+// anexar em tickets — ajuda a staff quando o usuário abre um chamado
+// incompleto. Fica numa pasta FIXA dentro dos dados do app (Kit-Ticket) —
+// usamos app.getPath('userData') em vez de montar o caminho na mão, então
+// não importa se o app está rodando como "idle-hub" ou "Midgard Idle-Hub".
+// ---------------------------------------------------------------------------
+const REPORT_FOLDER = () => path.join(app.getPath('userData'), 'Kit-Ticket');
+function ensureReportFolder() {
+  const folder = REPORT_FOLDER();
+  if (!fs.existsSync(folder)) fs.mkdirSync(folder, { recursive: true });
+  return folder;
+}
+ipcMain.handle('generate-report', async (event, data) => {
+  try {
+    const { logName, logContent, stateName, stateContent } = data || {};
+    const folder = ensureReportFolder();
+    const logPath = path.join(folder, logName || `report-log-${Date.now()}.txt`);
+    fs.writeFileSync(logPath, logContent || '(nenhuma mensagem de console foi registrada nesta sessão)', 'utf-8');
+    let statePath = null;
+    if (stateName) {
+      statePath = path.join(folder, stateName);
+      fs.writeFileSync(statePath, stateContent || '(não foi possível extrair o estado do personagem nesta sessão)', 'utf-8');
+    }
+    // Abre a pasta no explorador de arquivos do sistema (Explorer/Finder/etc.)
+    shell.openPath(folder);
+    return { ok: true, folder, logPath, statePath };
+  } catch (err) {
+    console.error('Falha ao gerar report (Kit-Ticket):', err);
+    return { ok: false, error: String(err) };
+  }
+});
+// ---------------------------------------------------------------------------
+// Captura de rede (HAR): ideia do Poring — um botão tipo "gravar", clica pra
+// começar, reproduz o bug, clica de novo pra parar e salvar um arquivo .har
+// (o mesmo formato que o Chrome DevTools exporta em Network > Save all as
+// HAR). Usamos o protocolo de depuração do Chromium (CDP) via
+// webContents.debugger — o mesmo mecanismo por trás do próprio DevTools —
+// para escutar TODA requisição de rede da conta em silêncio, sem precisar
+// abrir o DevTools visualmente.
+// ---------------------------------------------------------------------------
+const networkRecordings = new Map(); // webContentsId -> { requests: Map, contents }
+function buildHarEntry(reqData) {
+  const req = reqData.request || {};
+  const res = reqData.response || {};
+  const headersToArray = (h) => Object.entries(h || {}).map(([name, value]) => ({ name, value: String(value) }));
+  const startedDateTime = new Date(reqData.wallTime ? reqData.wallTime * 1000 : Date.now()).toISOString();
+  const time = reqData.endTimestamp && reqData.startTimestamp
+    ? Math.max(0, Math.round((reqData.endTimestamp - reqData.startTimestamp) * 1000))
+    : -1;
+  return {
+    startedDateTime,
+    time,
+    request: {
+      method: req.method || 'GET',
+      url: req.url || '',
+      httpVersion: 'HTTP/1.1',
+      cookies: [],
+      headers: headersToArray(req.headers),
+      queryString: [],
+      headersSize: -1,
+      bodySize: req.postData ? Buffer.byteLength(req.postData) : 0,
+      postData: req.postData ? { mimeType: (req.headers && req.headers['Content-Type']) || 'text/plain', text: req.postData } : undefined,
+    },
+    response: {
+      status: res.status || 0,
+      statusText: res.statusText || '',
+      httpVersion: 'HTTP/1.1',
+      cookies: [],
+      headers: headersToArray(res.headers),
+      content: {
+        size: reqData.encodedDataLength || 0,
+        mimeType: res.mimeType || 'application/octet-stream',
+      },
+      redirectURL: '',
+      headersSize: -1,
+      bodySize: reqData.encodedDataLength || 0,
+    },
+    cache: {},
+    timings: { send: 0, wait: time > 0 ? time : 0, receive: 0 },
+    _resourceType: reqData.resourceType || '',
+    _error: reqData.error || undefined,
+  };
+}
+ipcMain.handle('network-record-start', async (event, data) => {
+  try {
+    const webContentsId = data && data.webContentsId;
+    const contents = webContentsId != null ? webContents.fromId(webContentsId) : null;
+    if (!contents) return { ok: false, error: 'Conta não encontrada.' };
+    if (networkRecordings.has(webContentsId)) return { ok: true }; // já gravando
 
+    const dbg = contents.debugger;
+    try { dbg.attach('1.3'); }
+    catch (err) {
+      return { ok: false, error: 'Não foi possível anexar o depurador (o DevTools já pode estar aberto nessa conta).' };
+    }
+
+    const recSession = { requests: new Map(), contents };
+    networkRecordings.set(webContentsId, recSession);
+
+    dbg.on('message', (_evt, method, params) => {
+      const s = networkRecordings.get(webContentsId);
+      if (!s) return;
+      if (method === 'Network.requestWillBeSent') {
+        s.requests.set(params.requestId, {
+          request: {
+            method: params.request.method,
+            url: params.request.url,
+            headers: params.request.headers,
+            postData: params.request.postData,
+          },
+          wallTime: params.wallTime,
+          startTimestamp: params.timestamp,
+          resourceType: params.type,
+        });
+      } else if (method === 'Network.responseReceived') {
+        const r = s.requests.get(params.requestId);
+        if (r) {
+          r.response = {
+            status: params.response.status,
+            statusText: params.response.statusText,
+            headers: params.response.headers,
+            mimeType: params.response.mimeType,
+          };
+        }
+      } else if (method === 'Network.loadingFinished') {
+        const r = s.requests.get(params.requestId);
+        if (r) {
+          r.endTimestamp = params.timestamp;
+          r.encodedDataLength = params.encodedDataLength;
+        }
+      } else if (method === 'Network.loadingFailed') {
+        const r = s.requests.get(params.requestId);
+        if (r) {
+          r.endTimestamp = params.timestamp;
+          r.error = params.errorText;
+        }
+      }
+    });
+
+    await dbg.sendCommand('Network.enable');
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+});
+ipcMain.handle('network-record-stop', async (event, data) => {
+  try {
+    const webContentsId = data && data.webContentsId;
+    const harName = data && data.harName;
+    const recSession = networkRecordings.get(webContentsId);
+    if (!recSession) return { ok: false, error: 'Nenhuma gravação em andamento para essa conta.' };
+    const { contents, requests } = recSession;
+    try { await contents.debugger.sendCommand('Network.disable'); } catch (e) { /* ignore */ }
+    try { contents.debugger.detach(); } catch (e) { /* ignore */ }
+    networkRecordings.delete(webContentsId);
+
+    const entries = [...requests.values()].map(buildHarEntry);
+    const har = {
+      log: {
+        version: '1.2',
+        creator: { name: 'Idle Hub Kit-Ticket', version: '1.0' },
+        pages: [],
+        entries,
+      },
+    };
+    const folder = ensureReportFolder();
+    const harPath = path.join(folder, harName || `network-${Date.now()}.har`);
+    fs.writeFileSync(harPath, JSON.stringify(har, null, 2), 'utf-8');
+
+    // Snapshot da timeline de diagnóstico do Poring (window.__roidlePresentationTimelineDiagnostics)
+    // — salvo como arquivo irmão do .har, mesmo nome base, sufixo -diagnostics.json.
+    let diagnosticsPath = null;
+    const diagnosticsSnapshot = data && data.diagnosticsSnapshot;
+    if (diagnosticsSnapshot != null) {
+      const base = (harName || `network-${Date.now()}.har`).replace(/\.har$/i, '');
+      diagnosticsPath = path.join(folder, `${base}-diagnostics.json`);
+      try {
+        fs.writeFileSync(diagnosticsPath, JSON.stringify(diagnosticsSnapshot, null, 2), 'utf-8');
+      } catch (err) {
+        console.error('Falha ao salvar snapshot de diagnóstico:', err);
+        diagnosticsPath = null;
+      }
+    }
+
+    shell.openPath(folder);
+    return { ok: true, harPath, diagnosticsPath, totalRequests: entries.length };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+});
 // ---------------------------------------------------------------------------
 // Controles de janela custom
 // ---------------------------------------------------------------------------
@@ -374,7 +529,6 @@ ipcMain.on('win-close', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) win.close();
 });
-
 ipcMain.handle('toggle-fullscreen', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (!win) return false;
@@ -386,11 +540,9 @@ ipcMain.handle('is-fullscreen', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   return win ? win.isFullScreen() : false;
 });
-
 ipcMain.handle('open-external', (event, url) => {
   if (/^https?:\/\//i.test(url)) shell.openExternal(url);
 });
-
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
     const req = https.get(url, {
@@ -406,7 +558,6 @@ function fetchJson(url) {
     req.setTimeout(10000, () => req.destroy(new Error('timeout')));
   });
 }
-
 // Verificação de atualização via um Gist do GitHub contendo um JSON simples
 // tipo { "version": "1.3.0", "url": "...", "message": "..." }. Compara com a
 // versão real do app (package.json) — SEM baixar/instalar nada, só avisa.
@@ -415,21 +566,17 @@ ipcMain.handle('check-for-updates', async (event, gistUrl) => {
     const match = String(gistUrl || '').match(/gist\.github(?:usercontent)?\.com\/[^/]+\/([a-f0-9]+)/i);
     const gistId = match ? match[1] : null;
     if (!gistId) return { ok: false, error: 'invalid-url' };
-
     const data = await fetchJson(`https://api.github.com/gists/${gistId}`);
     if (!data || !data.files) return { ok: false, error: 'gist-error' };
-
     const fileKeys = Object.keys(data.files);
     const fileKey = fileKeys.find((k) => k.toLowerCase().endsWith('.json')) || fileKeys[0];
     if (!fileKey || !data.files[fileKey] || typeof data.files[fileKey].content !== 'string') {
       return { ok: false, error: 'no-file' };
     }
-
     let remote;
     try { remote = JSON.parse(data.files[fileKey].content); }
     catch (err) { return { ok: false, error: 'bad-json' }; }
     if (!remote || !remote.version) return { ok: false, error: 'no-version-field' };
-
     const localVersion = app.getVersion();
     return {
       ok: true,
