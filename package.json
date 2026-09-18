@@ -1,6 +1,6 @@
 {
   "name": "idle-hub",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "description": "Idle Hub — gerenciador de múltiplas contas/sessões de navegador em workspaces, feito em Electron",
   "main": "main.js",
   "author": "Dinho",
@@ -8,6 +8,7 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder",
+    "update-gist": "node scripts/update-gist.js",
     "build:css": "tailwindcss -i src-tailwind.css -o style.css --minify"
   },
   "devDependencies": {
@@ -22,6 +23,11 @@
     "files": [
       "**/*"
     ],
+    "publish": {
+      "provider": "github",
+      "owner": "Jaffrito",
+      "repo": "Idle-Hub"
+    },
     "win": {
       "target": "nsis",
       "icon": "build/icon.ico"

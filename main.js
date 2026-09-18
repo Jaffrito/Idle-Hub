@@ -1,11 +1,46 @@
 
 const { app, BrowserWindow, ipcMain, webContents, session, Menu, dialog, shell, safeStorage } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 const https = require('https');
 let mainWindow;
 const STATE_FILE = () => path.join(app.getPath('userData'), 'state.json');
 const registeredPartitions = new Set();
+
+// ---------------------------------------------------------------------------
+// Auto-update via electron-updater, lendo as Releases do GitHub do próprio
+// repositório (configurado em package.json > build > publish). Só funciona
+// no app empacotado (.exe instalado) — em modo dev (`npm start`) não tem o
+// que checar, então tudo aqui é protegido por app.isPackaged.
+// ---------------------------------------------------------------------------
+autoUpdater.autoDownload = true; // baixa sozinho assim que encontra uma versão nova
+autoUpdater.autoInstallOnAppQuit = false; // só instala quando a pessoa clicar em "Reiniciar agora"
+
+function sendUpdateEvent(payload) {
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('autoupdate-event', payload);
+}
+autoUpdater.on('checking-for-update', () => sendUpdateEvent({ status: 'checking' }));
+autoUpdater.on('update-available', (info) => sendUpdateEvent({ status: 'available', version: info.version }));
+autoUpdater.on('update-not-available', () => sendUpdateEvent({ status: 'not-available' }));
+autoUpdater.on('download-progress', (p) => sendUpdateEvent({ status: 'downloading', percent: Math.round(p.percent || 0) }));
+autoUpdater.on('update-downloaded', (info) => sendUpdateEvent({ status: 'downloaded', version: info.version }));
+autoUpdater.on('error', (err) => sendUpdateEvent({ status: 'error', message: String((err && err.message) || err) }));
+
+ipcMain.handle('autoupdate-check', async () => {
+  if (!app.isPackaged) return { ok: false, error: 'dev-mode' };
+  try {
+    await autoUpdater.checkForUpdates();
+    return { ok: true };
+  } catch (err) {
+    console.error('Falha ao checar atualização (electron-updater):', err);
+    return { ok: false, error: String(err) };
+  }
+});
+ipcMain.on('autoupdate-install', () => {
+  autoUpdater.quitAndInstall();
+});
+
 // Janelas independentes abertas via "Abrir em nova janela" (uma por conta).
 // accountId -> BrowserWindow
 const accountWindows = new Map();
@@ -46,6 +81,11 @@ app.whenReady().then(() => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+  if (app.isPackaged) {
+    setTimeout(() => {
+      autoUpdater.checkForUpdates().catch((err) => console.error('Falha ao checar atualização no início:', err));
+    }, 3000);
+  }
 });
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();

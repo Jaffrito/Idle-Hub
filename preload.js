@@ -29,4 +29,8 @@ contextBridge.exposeInMainWorld('nativeAPI', {
   generateReport: (data) => ipcRenderer.invoke('generate-report', data),
   startNetworkRecording: (data) => ipcRenderer.invoke('network-record-start', data),
   stopNetworkRecording: (data) => ipcRenderer.invoke('network-record-stop', data),
+
+  checkForAppUpdate: () => ipcRenderer.invoke('autoupdate-check'),
+  installAppUpdate: () => ipcRenderer.send('autoupdate-install'),
+  onAutoUpdateEvent: (callback) => ipcRenderer.on('autoupdate-event', (event, data) => callback(data)),
 });

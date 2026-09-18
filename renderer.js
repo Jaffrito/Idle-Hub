@@ -2849,6 +2849,57 @@ function checkForUpdatesOnStartup() {
     }
   }).catch(() => { /* silencioso — não incomoda o usuário com erro de rede ao abrir o app */ });
 }
+
+// ---------------------------------------------------------------------------
+// Auto-update de verdade (electron-updater), só funciona no app empacotado
+// (.exe instalado) — quem roda direto do código-fonte não recebe esses
+// eventos do main.js, então esse banner simplesmente nunca aparece pra eles.
+// Fica separado do toast do Gist acima porque precisa ficar na tela durante
+// todo o download e não pode sumir sozinho (a pessoa decide quando reiniciar).
+// ---------------------------------------------------------------------------
+function ensureAutoUpdateBanner() {
+  let banner = $('#autoupdate-banner');
+  if (banner) return banner;
+  banner = document.createElement('div');
+  banner.id = 'autoupdate-banner';
+  banner.style.cssText = 'position:fixed; left:50%; transform:translateX(-50%); bottom:16px; background:#12151c; border:1px solid #2a2f3a; border-radius:10px; padding:10px 16px; display:none; align-items:center; gap:12px; z-index:99999; color:#e5e7eb; font-size:13px; box-shadow:0 8px 24px rgba(0,0,0,.45);';
+  banner.innerHTML = `<span id="autoupdate-banner-text"></span><button id="autoupdate-banner-btn" class="btn-icon" style="width:auto; padding:4px 12px; display:none; background:#e3b341; color:#05070b; font-weight:600;"></button>`;
+  document.body.appendChild(banner);
+  return banner;
+}
+function showAutoUpdateBanner(text, buttonText, onClick) {
+  const banner = ensureAutoUpdateBanner();
+  banner.style.display = 'flex';
+  banner.querySelector('#autoupdate-banner-text').textContent = text;
+  const btn = banner.querySelector('#autoupdate-banner-btn');
+  if (buttonText) {
+    btn.textContent = buttonText;
+    btn.style.display = '';
+    btn.onclick = onClick;
+  } else {
+    btn.style.display = 'none';
+  }
+}
+if (!STANDALONE_ACCOUNT && window.nativeAPI.onAutoUpdateEvent) {
+  window.nativeAPI.onAutoUpdateEvent((data) => {
+    if (!data) return;
+    switch (data.status) {
+      case 'available':
+        showAutoUpdateBanner(`Atualização v${data.version} encontrada — baixando em segundo plano...`);
+        break;
+      case 'downloading':
+        showAutoUpdateBanner(`Baixando atualização... ${data.percent}%`);
+        break;
+      case 'downloaded':
+        showAutoUpdateBanner(`Atualização v${data.version} pronta pra instalar!`, 'Reiniciar agora', () => window.nativeAPI.installAppUpdate());
+        break;
+      case 'error':
+        console.error('Erro no auto-update:', data.message);
+        break;
+      // 'checking' e 'not-available' ficam em silêncio — não precisa incomodar o usuário
+    }
+  });
+}
 // ---------------------------------------------------------------------------
 // Scripts / Extras — userscripts estilo Tampermonkey, com alvo por workspace/conta
 // ---------------------------------------------------------------------------

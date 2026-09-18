@@ -83,6 +83,7 @@ Ideal para quem gerencia múltiplos perfis em jogos, redes sociais, e‑commerce
 | 🔇 | **Mudo Global + Individual** | Um botão na barra superior silencia **todas as contas abertas, de todos os workspaces**, de uma vez. Cada conta também mantém seu próprio botão de mudo individual, que continua valendo assim que o mudo global é desligado. |
 | 💰 | **Zeny/h na Barra de Status** | Soma em tempo real o "Saldo potencial/h" de todas as contas abertas e mostra o total na barra de status — sem precisar abrir a telemetria em cada uma. |
 | 🎫 | **Kit de Diagnóstico (Tickets)** | Ferramentas de diagnóstico direto em cada conta, pra agilizar a abertura de tickets de suporte com a equipe do jogo. |
+| ⬇️ | **Atualização Automática** | O app confere sozinho se tem versão nova assim que abre (via GitHub Releases) e baixa em segundo plano — só clicar em "Reiniciar agora" quando o aviso aparecer. |
 | 📊 | **Métricas em Tempo Real** | Acompanhe CPU, RAM e FPS de cada conta e do processo principal na barra de status. |
 | 🔍 | **Barra de URL Universal** | Digite uma URL e ela será aberta em todas as contas abertas do workspace atual com um clique. |
 | 💾 | **Persistência Local** | Tudo é salvo automaticamente em `state.json`. Ao reabrir, o aplicativo restaura exatamente onde você parou. |
@@ -155,6 +156,10 @@ Baseado no [Idle Hub original](https://github.com/Diinhow/Idle-Hub) (créditos a
 
 - **v1.6.0 (Midgard Edition)** — Kit de Diagnóstico:
   - **Ferramentas de Diagnóstico (Kit-Ticket):** Novas ferramentas para gerar relatórios completos direto de cada conta, agilizando a abertura de tickets de suporte de forma mais eficiente.
+
+- **v1.6.3 (Midgard Edition)** — Atualização Automática:
+  - **Auto-Update:** O app confere sozinho se tem uma versão nova assim que abre e baixa em segundo plano direto das Releases do GitHub — basta clicar em "Reiniciar agora" quando o aviso aparecer, sem precisar baixar ZIP nem substituir pasta na mão.
+  - Pequenas correções de exibição da versão na barra de status.
 
 ## Licença
 
